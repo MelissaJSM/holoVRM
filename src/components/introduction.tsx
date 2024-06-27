@@ -93,7 +93,7 @@ export const Introduction = ({ openAiKey, onChangeAiKey, onSubmitUserId, onReset
               <Link url={"https://github.com/zoan37/ChatVRM"} label={"https://github.com/zoan37/ChatVRM"} />
               <br />
               HoloVrm : &nbsp;
-              <Link url={"https://github.com/zoan37/ChatVRM"} label={"https://github.com/zoan37/ChatVRM"} />
+              <Link url={"https://github.com/MelissaJSM/holoVRM"} label={"https://github.com/MelissaJSM/holoVRM"} />
             </div>
           </div>
 
