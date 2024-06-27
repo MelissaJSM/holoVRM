@@ -8,12 +8,12 @@ type Props = {
   onChangeElevenLabsKey: (elevenLabsKey: string) => void;
   onSubmitUserId: (userId: string, isSession: boolean) => void;
   onResetChatLog: () => void;
+  onOpenSettings: () => void;
 };
 
-export const Introduction = ({ openAiKey,  onChangeAiKey,  onSubmitUserId, onResetChatLog }: Props) => {
+export const Introduction = ({ openAiKey, onChangeAiKey, onSubmitUserId, onResetChatLog, onOpenSettings }: Props) => {
   const [opened, setOpened] = useState(true);
   const [userId, setUserId] = useState('');
-
 
   const handleStart = () => {
     if (userId) {
@@ -28,14 +28,15 @@ export const Introduction = ({ openAiKey,  onChangeAiKey,  onSubmitUserId, onRes
           alert("취소되었습니다.")
         }
       } else {
-        alert('처음 시작하실 때 설정메뉴에서 홀로라이브 멤버를 선택해 주시기 바랍니다.\n해당 id를 반드시 기억해주세요. id로 대화를 이어나갈 수 있습니다.');
+        alert('해당 ID가 발견되지 않았으므로 처음부터 시작합니다.\nID를 반드시 기억해주세요. ID 입력 후 대화를 이어나갈 수 있습니다.');
         window.localStorage.setItem('previousUserId', userId);
         onResetChatLog();
         onSubmitUserId(userId, false);
         setOpened(false);
+        onOpenSettings(); // 설정 창 열기
       }
     } else {
-      const confirmSession = window.confirm('처음 시작하실 때 설정메뉴에서 홀로라이브 멤버를 선택해 주시기 바랍니다.\n해당 대화는 저장되지 않습니다. 계속하시겠습니까?');
+      const confirmSession = window.confirm('설정창으로 이동합니다. 홀로라이브 멤버를 선택 해 주세요.\n해당 대화는 저장되지 않는 모드입니다. 계속하시겠습니까?');
       if (confirmSession) {
         const sessionId = `session_${Date.now()}`;
         sessionStorage.setItem('sessionUserId', sessionId);
@@ -43,6 +44,7 @@ export const Introduction = ({ openAiKey,  onChangeAiKey,  onSubmitUserId, onRes
         onResetChatLog();
         onSubmitUserId(sessionId, true);
         setOpened(false);
+        onOpenSettings(); // 설정 창 열기
       }
     }
   };
@@ -126,7 +128,7 @@ export const Introduction = ({ openAiKey,  onChangeAiKey,  onSubmitUserId, onRes
             <div className="my-8 font-bold typography-20 text-secondary">사용자 ID</div>
             <input
                 type="text"
-                placeholder="User ID"
+                placeholder="이 공간을 비워두면 기록없이 대화가 시작됩니다."
                 value={userId}
                 onChange={(e) => setUserId(e.target.value)}
                 className="my-4 px-16 py-8 w-full h-40 bg-surface3 hover:bg-surface3-hover rounded-4 text-ellipsis"

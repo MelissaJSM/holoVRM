@@ -156,7 +156,7 @@ export const Settings = ({
                     <div className="my-40 bg-gray-100 p-8 rounded-md">
                         <div className="my-8">
                             <div className="my-16 typography-20 font-bold">캐릭터 컨셉 설정(수동 변경해도 적용 되지 않을 수 있습니다.)</div>
-                            <TextButton onClick={handleResetSystemPrompt}>캐릭터 컨셉을 리셋합니다.(쓰지 마세요)</TextButton>
+                            <TextButton onClick={handleResetSystemPrompt}>캐릭터 컨셉을 리셋합니다.(누르지 마세요)</TextButton>
                         </div>
                         <textarea
                             value={systemPrompt}

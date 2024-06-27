@@ -57,7 +57,7 @@ export const MessageInput = ({
             ChatVRM
           </a>,&nbsp;
             Powered by&nbsp;
-          <a target="_blank" href="https://github.com/MelissaJSM/luciaWebProject.git" className="underline">
+          <a target="_blank" href="https://github.com/MelissaJSM/holoVRM.git" className="underline">
             MelissaJ
           </a>
         </div>

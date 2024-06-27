@@ -31,6 +31,7 @@ export default function Home() {
     const [assistantMessage, setAssistantMessage] = useState("");
     const [summary, setSummary] = useState("");
     const [showIntro, setShowIntro] = useState(true); // 인트로 화면 표시 여부
+    const [showSettings, setShowSettings] = useState(false); // 설정 창 표시 여부
 
     const resetChatLog = useCallback(() => {
         setChatLog([]);
@@ -39,6 +40,12 @@ export default function Home() {
     const handleUserIdSubmit = useCallback((inputUserId: string, isSession: boolean) => {
         setUserId(inputUserId);
         setShowIntro(false); // 인트로 화면 숨기기
+    }, []);
+
+    // 추가된 부분: 설정 창 열기 핸들러
+    const openSettings = useCallback(() => {
+        setShowIntro(false);
+        setShowSettings(true);
     }, []);
 
     useEffect(() => {
@@ -284,6 +291,7 @@ export default function Home() {
                     onChangeElevenLabsKey={setElevenLabsKey}
                     onSubmitUserId={handleUserIdSubmit}
                     onResetChatLog={resetChatLog}
+                    onOpenSettings={openSettings} // 추가된 부분
                 />
             ) : (
                 <>
@@ -308,6 +316,7 @@ export default function Home() {
                         onChangeKoeiromapParam={setKoeiroParam}
                         handleClickResetChatLog={resetChatLog}
                         handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
+                        onOpenSettings={openSettings} // 추가된 부분
                     />
                     <GitHubLink />
                 </>
