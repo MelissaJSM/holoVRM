@@ -1,10 +1,10 @@
 import { buildUrl } from "@/utils/buildUrl";
 import Head from "next/head";
 export const Meta = () => {
-  const title = "ChatVRM";
+  const title = "HoloVRM";
   const description =
-    "You can enjoy conversations with 3D characters using only a web browser using a microphone, text input, and speech synthesis. You can also change the character (VRM), set the personality, and adjust the voice.";
-  const imageUrl = "https://chat-vrm-window.vercel.app/ogp-en.png";
+    "AI로 창조된 홀로라이브멤버와 즐거운 대화를 할 수 있습니다.";
+  const imageUrl = "/profile.png";
   return (
     <Head>
       <title>{title}</title>

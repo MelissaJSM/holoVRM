@@ -241,8 +241,8 @@ export default function Home() {
                 else {
                     character = elevenLabsParam.voiceId || "miko";
                 }
-
-                const response = await fetch("http://localhost:3545/tts", {
+                const ttsEndpoint = process.env.NEXT_PUBLIC_TTS_SERVER;
+                const response = await fetch(`${ttsEndpoint}/tts`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
