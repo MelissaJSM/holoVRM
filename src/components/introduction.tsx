@@ -74,7 +74,7 @@ export const Introduction = ({ openAiKey, onChangeAiKey, onSubmitUserId, onReset
               HoloVRM에 대하여
             </div>
             <div>
-              마이크, 문자 입력, 음성 합성 등을 이용해 웹 브라우저만으로 3D 캐릭터와 대화를 즐길 수 있는 웹 브라우저 기반 대화 시스템입니다.
+              마이크, 문자 입력, 음성 합성 등을 이용해 웹 브라우저만으로 AI 홀로라이브 멤버와 대화를 즐길 수 있는 웹 브라우저 기반 대화 시스템입니다.
             </div>
           </div>
           <div className="my-24">

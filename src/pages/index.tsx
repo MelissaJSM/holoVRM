@@ -118,6 +118,11 @@ export default function Home() {
             setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
             setSystemPrompt(characterPrompts["fubuki"]);
             console.log("Character set to:", "fubuki", "Prompt:", characterPrompts["fubuki"]);
+        }else if (character.includes("aqua")) {
+            document.body.style.backgroundImage = `url(/aqua.png)`;
+            setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
+            setSystemPrompt(characterPrompts["aqua"]);
+            console.log("Character set to:", "aqua", "Prompt:", characterPrompts["aqua"]);
         } else {
             document.body.style.backgroundImage = `url(/${character}.png)`;
             setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
@@ -245,11 +250,15 @@ export default function Home() {
                 else if((elevenLabsParam.voiceId).includes("fubuki")){
                     character = "fubuki";
                 }
+                else if((elevenLabsParam.voiceId).includes("aqua")){
+                    character = "aqua";
+                }
                 else {
                     character = elevenLabsParam.voiceId || "miko";
                 }
                 const ttsEndpoint = process.env.NEXT_PUBLIC_TTS_SERVER;
                 const response = await fetch(`${ttsEndpoint}/tts`, {
+                    //const response = await fetch(`http://localhost:3545/tts`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

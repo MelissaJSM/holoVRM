@@ -65,6 +65,9 @@ export const Settings = ({
         } else if (selectedValue.includes("fubuki")) {
             adjustedValue = selectedValue;
             promptValue = "fubuki";
+        } else if (selectedValue.includes("aqua")) {
+            adjustedValue = selectedValue;
+            promptValue = "aqua";
         }
 
         onChangeElevenLabsVoice({ target: { value: adjustedValue } } as React.ChangeEvent<HTMLSelectElement>);
@@ -87,7 +90,10 @@ export const Settings = ({
             body.style.backgroundImage = `url(/miko_1st.png)`;
         } else if (selectedCharacter.includes("fubuki")) {
             body.style.backgroundImage = `url(/fubuki.png)`;
-        } else {
+        }else if (selectedCharacter.includes("aqua")) {
+            body.style.backgroundImage = `url(/aqua.png)`;
+        }
+        else {
             body.style.backgroundImage = `url(/${selectedCharacter}.png)`;
         }
     }, [selectedCharacter]);
@@ -108,7 +114,8 @@ export const Settings = ({
         { value: "pekora", label: "우사다 페코라", image: "/pekora.png" },
         { value: "fubuki", label: "시라카미 후부키", image: "/fubuki.png" },
         { value: "fubuki_bunny", label: "시라카미 후부키(버니)", image: "/fubuki_bunny.png" },
-        { value: "aqua", label: "미나토 아쿠아", image: "/aqua.png" },
+        { value: "aqua_made", label: "미나토 아쿠아(메이드)", image: "/aqua_made.png" },
+        { value: "aqua", label: "미나토 아쿠아(사복)", image: "/aqua.png" },
         { value: "koyori", label: "하쿠이 코요리", image: "/koyori.png" },
         // 추가적인 옵션들...
     ];
