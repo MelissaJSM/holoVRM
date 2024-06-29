@@ -69,6 +69,10 @@ export const Settings = ({
             adjustedValue = selectedValue;
             promptValue = "aqua";
         }
+        else if (selectedValue.includes("koyori")) {
+            adjustedValue = selectedValue;
+            promptValue = "koyori";
+        }
 
         onChangeElevenLabsVoice({ target: { value: adjustedValue } } as React.ChangeEvent<HTMLSelectElement>);
         const newEvent = { target: { value: characterPrompts[promptValue] } } as React.ChangeEvent<HTMLTextAreaElement>;
@@ -92,7 +96,10 @@ export const Settings = ({
             body.style.backgroundImage = `url(/fubuki.png)`;
         }else if (selectedCharacter.includes("aqua")) {
             body.style.backgroundImage = `url(/aqua.png)`;
+        }else if (selectedCharacter.includes("koyori")) {
+            body.style.backgroundImage = `url(/koyori.png)`;
         }
+
         else {
             body.style.backgroundImage = `url(/${selectedCharacter}.png)`;
         }
@@ -118,6 +125,7 @@ export const Settings = ({
         { value: "aqua_made", label: "미나토 아쿠아(메이드)", image: "/aqua_made.png" },
         { value: "aqua", label: "미나토 아쿠아(사복)", image: "/aqua.png" },
         { value: "koyori", label: "하쿠이 코요리", image: "/koyori.png" },
+        { value: "koyori_off", label: "하쿠이 코요리(코트 탈의)", image: "/koyori.png" },
         // 추가적인 옵션들...
     ];
 

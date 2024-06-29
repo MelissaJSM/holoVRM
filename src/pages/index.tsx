@@ -123,7 +123,13 @@ export default function Home() {
             setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
             setSystemPrompt(characterPrompts["aqua"]);
             console.log("Character set to:", "aqua", "Prompt:", characterPrompts["aqua"]);
-        } else {
+        }else if (character.includes("koyori")) {
+            document.body.style.backgroundImage = `url(/koyori.png)`;
+            setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
+            setSystemPrompt(characterPrompts["koyori"]);
+            console.log("Character set to:", "koyori", "Prompt:", characterPrompts["koyori"]);
+        }
+        else {
             document.body.style.backgroundImage = `url(/${character}.png)`;
             setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
             setSystemPrompt(characterPrompts[character]);
@@ -252,6 +258,9 @@ export default function Home() {
                 }
                 else if((elevenLabsParam.voiceId).includes("aqua")){
                     character = "aqua";
+                }
+                else if((elevenLabsParam.voiceId).includes("koyori")){
+                    character = "koyori";
                 }
                 else {
                     character = elevenLabsParam.voiceId || "miko";
