@@ -114,6 +114,7 @@ export const Settings = ({
         { value: "pekora", label: "우사다 페코라", image: "/pekora.png" },
         { value: "fubuki", label: "시라카미 후부키", image: "/fubuki.png" },
         { value: "fubuki_bunny", label: "시라카미 후부키(버니)", image: "/fubuki_bunny.png" },
+        { value: "korone", label: "이누가미 코로네", image: "/korone.png" },
         { value: "aqua_made", label: "미나토 아쿠아(메이드)", image: "/aqua_made.png" },
         { value: "aqua", label: "미나토 아쿠아(사복)", image: "/aqua.png" },
         { value: "koyori", label: "하쿠이 코요리", image: "/koyori.png" },
