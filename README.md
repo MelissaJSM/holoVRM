@@ -11,7 +11,7 @@ HoloVRM은 마이크, 문자 입력, 음성 합성 등을 이용해 웹 브라�
 @pixiv/three-vrm: 3D 모델을 표시하고 조작하는 데 사용되었습니다. @pixiv/three-vrm<br><br>
 음성 합성: RVC 모델을 바탕으로 8천개의 음성을 해당 멤버의 목소리로 딥러닝 시킨 후 VITS를 사용하여 TTS 작업을 수행했습니다.<br><br>
 음성 인식: 인터넷 브라우저의 음성 인식을 사용하였으므로 브라우저마다 성능이 다를 수 있습니다.<br><br>
-OpenAI API: 인격은 ChatGPT-4를 이용하여 부여하였으며 세세한 대화를 위하여 장문을 사용했습니다. OpenAI API<br><br>
+OpenAI API: 인격은 ChatGPT-4o를 이용하여 부여하였으며 세세한 대화를 위하여 장문을 사용했습니다. OpenAI API<br><br>
 이 소스코드는 원본 ChatVRM을 참고하여 재구성하였습니다.<br><br>
 
 <h2>원본</h2>
