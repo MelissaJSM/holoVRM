@@ -25,6 +25,8 @@ ChatVRM : <a href="https://github.com/zoan37/ChatVRM">https://github.com/zoan37/
 
 <h2>changelog</h2>
 
+0.5 : 오오카미 미오 추가<br>
+
 0.4.1 : 램 누수 최적화<br>
 0.4 : 네코마타 오카유 추가<br>
 
