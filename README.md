@@ -25,6 +25,7 @@ ChatVRM : <a href="https://github.com/zoan37/ChatVRM">https://github.com/zoan37/
 
 <h2>changelog</h2>
 
+0.6.1 대화창 음성 종료 후 5초뒤에 사라지도록 변경<br>
 0.6.0 로보코 씨 추가<br>
 
 0.5.1 : 채팅 내역 초기화 할때 기억된 대화가 초기화 되지 않는 문제 해결<br>

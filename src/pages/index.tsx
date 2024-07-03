@@ -19,34 +19,8 @@ const montserrat = Montserrat({ variable: "--font-montserrat", display: "swap", 
 
 
 const easterEgg = `
-
-
-
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡐⠀⠀⠀⠀⠀⠀⠀⠀⠄⠠⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⢈⠐⡡⠀⠀⠀⠀⠀⡀⠌⡀⢃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⢐⠠⠂⣄⠀⠀⠀⠠⠐⡨⢀⠸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡆⠊⠈⠀⢐⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠄⡌⡢⠀⠄⠀⠀⡀⠀⠑⠄⡃⠀⠀⠀⠀⠀⠀⠀⠀⢔⠨⡢⣉⠖⡉⢕⠒⢤⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠄⢀⠈⢂⠅⠀⠠⠁⠠⢀⡒⢀⠀⠀⠀⠀⠀⢀⢐⠕⡡⢎⠔⡕⢨⠊⡔⡩⠢⡑⢕⣀⢀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⡀⠂⠀⡔⢁⠀⠄⠠⡀⡈⠐⠅⠠⡀⠀⠀⣄⠇⡱⡱⡨⡊⢜⢄⢣⡳⢈⣆⢙⡇⠧⣱⠉⢤⡂⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡌⡐⠀⡎⡀⠔⡀⠕⡐⠠⠘⠌⡌⠆⢐⠄⢰⠌⠼⠁⡊⠐⡣⢒⠤⠃⠳⡑⠲⡄⢫⢗⢬⡫⢳⠜⡀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⡸⠰⡄⢪⠰⠁⡢⢕⠈⢥⢅⠑⡜⣀⠚⣀⠗⢊⣎⠊⠑⠲⠄⠘⠢⠓⡷⢤⡉⡎⣘⠜⣅⢺⢜⢄⠗⡄⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠠⡎⢣⠆⡇⠠⢚⢠⠡⠈⡇⢠⠐⠥⢃⣌⡆⠅⡼⣹⡤⠄⢂⠀⡀⠀⢀⠁⠌⠀⠁⢞⢤⢫⡪⡳⡡⢊⢆⢅⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠘⡀⢫⡐⡇⢘⠘⡌⣀⡐⣄⡑⠀⠈⡋⠖⠘⡅⢘⠓⠷⢂⡀⠀⠈⠀⠀⠐⠀⢀⠂⡦⡜⡠⠳⡱⠈⡢⡃⠜⠄⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⡄⢁⠎⢘⠆⠐⡱⠈⢀⠀⠀⠀⠀⠀⠀⠠⢀⠇⢂⠀⠀⡠⣏⡛⢒⠴⢢⢖⢖⠙⠩⡞⡔⡸⡐⢽⢀⠵⡨⠁⠀⠀⠀
-⠀⠀⠀⠀⠀⠠⡑⠄⠰⢂⠊⠊⢠⠊⣄⢀⠌⠈⠈⠂⢊⡠⠐⠁⣇⠠⠀⠈⡲⠪⡠⠛⠸⠃⠁⠀⠈⠀⠓⡵⡈⠺⣄⠣⡊⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⢆⢰⠁⠁⠀⠀⠆⠄⠠⠀⠀⠄⡀⠀⣱⠀⠐⠄⡒⡐⠀⣄⡱⡘⣮⢀⠄⠁⠀⠀⢀⠀⡙⣎⢝⠔⡡⡫⠐⢢⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠌⠀⡖⢉⠀⠀⠀⠈⣕⠈⠒⠐⠄⡠⢑⠜⠀⢄⠠⠀⠉⠂⠄⠉⣉⢖⢣⢦⠄⣃⢊⠀⠀⢜⠌⡮⢳⢌⠢⢣⠀⠉⡆⡀⠀
-⠀⠀⠀⠀⠀⡊⢦⡈⠃⠀⠀⠀⠀⠀⠁⠅⠀⠠⡀⢁⠇⢒⠈⠤⠁⢌⠀⢃⠘⢔⠩⠓⠤⡔⠈⢆⠄⠀⡹⡂⡃⠈⠑⢧⡑⡩⡂⠎⠂⠀
-⠀⣠⣄⣠⠚⡤⢢⡂⣔⢠⠀⠀⠀⠀⢈⠂⣏⠆⠡⢰⠃⡈⢈⠂⠡⠀⠜⣠⢁⢖⢁⠦⢸⠁⣀⡨⠲⠄⢚⢜⠣⣄⡀⠠⠇⠐⠕⠀⠀⠀
-⠀⢸⢆⢺⢔⢬⢢⠋⢄⠇⠁⠀⠀⢀⠄⠁⠀⠀⠀⠐⡇⠀⠂⡌⢐⢁⠜⠀⠂⠂⢣⠐⡀⡱⠅⠤⡠⠀⣋⠈⠃⢶⡹⠈⠀⠀⠁⠀⠀⠀
-
-
-
-
-
-    "페코미코는 존재하니 믿을지어다. - 멜리사J"`;
-
+// 생략된 내용
+`;
 
 export default function Home() {
     const { viewer } = useContext(ViewerContext);
@@ -63,7 +37,7 @@ export default function Home() {
     const [summary, setSummary] = useState("");
     const [showIntro, setShowIntro] = useState(true); // 인트로 화면 표시 여부
     const [showSettings, setShowSettings] = useState(false); // 설정 창 표시 여부
-
+    const [showAssistantMessage, setShowAssistantMessage] = useState(true); // 대화창 표시 여부
 
     useEffect(() => {
         console.log(easterEgg);
@@ -199,7 +173,12 @@ export default function Home() {
             onEnd?: () => void,
             audioBuffer?: ArrayBuffer
         ) => {
-            speakCharacter(screenplay, elevenLabsKey, elevenLabsParam, viewer, onStart, onEnd, audioBuffer);
+            speakCharacter(screenplay, elevenLabsKey, elevenLabsParam, viewer, onStart, () => {
+                if (onEnd) onEnd();
+                setTimeout(() => {
+                    setShowAssistantMessage(false);
+                }, 5000); // 5초 뒤에 대화창 숨기기
+            }, audioBuffer);
             console.log('speak character');
         },
         [viewer]
@@ -297,7 +276,7 @@ export default function Home() {
                 }
                 const ttsEndpoint = process.env.NEXT_PUBLIC_TTS_SERVER;
                 const response = await fetch(`${ttsEndpoint}/tts`, {
-                // const response = await fetch(`http://localhost:3545/tts`, {
+                    // const response = await fetch(`http://localhost:3545/tts`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -318,6 +297,7 @@ export default function Home() {
 
                 handleSpeakAi(screenplay, elevenLabsKey, elevenLabsParam, () => {
                     setAssistantMessage(gptResponse);
+                    setShowAssistantMessage(true); // 대화창을 다시 표시
                 }, undefined, audioBuffer);
             } catch (error) {
                 console.error("Error sending chat:", error);
@@ -366,6 +346,7 @@ export default function Home() {
                         handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
                         onOpenSettings={openSettings}
                         userId={userId} // 추가된 부분
+                        showAssistantMessage={showAssistantMessage} // 추가된 부분
                     />
                     <GitHubLink />
                 </>

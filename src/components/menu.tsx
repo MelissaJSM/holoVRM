@@ -26,6 +26,7 @@ type Props = {
     handleClickResetSystemPrompt: () => void;
     onOpenSettings: () => void;
     userId: string; // 새로운 prop 추가
+    showAssistantMessage: boolean; // 새로운 prop 추가
 };
 
 export const Menu = ({
@@ -46,6 +47,7 @@ export const Menu = ({
                          handleClickResetSystemPrompt,
                          onOpenSettings, // 새로운 prop 추가
                          userId, // 새로운 prop 추가
+                         showAssistantMessage, // 새로운 prop 추가
                      }: Props) => {
     const [showSettings, setShowSettings] = useState(false);
     const [showChatLog, setShowChatLog] = useState(false);
@@ -175,7 +177,7 @@ export const Menu = ({
                     userId={userId} // 새로운 prop 추가
                 />
             )}
-            {!showChatLog && assistantMessage && (
+            {!showChatLog && showAssistantMessage && assistantMessage && (
                 <AssistantText message={assistantMessage} />
             )}
             <input
