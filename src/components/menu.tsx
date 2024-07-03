@@ -24,7 +24,8 @@ type Props = {
     onChangeKoeiromapParam: (param: KoeiroParam) => void;
     handleClickResetChatLog: () => void;
     handleClickResetSystemPrompt: () => void;
-    onOpenSettings: () => void; // 새로운 prop 추가
+    onOpenSettings: () => void;
+    userId: string; // 새로운 prop 추가
 };
 
 export const Menu = ({
@@ -43,7 +44,8 @@ export const Menu = ({
                          onChangeKoeiromapParam,
                          handleClickResetChatLog,
                          handleClickResetSystemPrompt,
-                         onOpenSettings // 새로운 prop 추가
+                         onOpenSettings, // 새로운 prop 추가
+                         userId, // 새로운 prop 추가
                      }: Props) => {
     const [showSettings, setShowSettings] = useState(false);
     const [showChatLog, setShowChatLog] = useState(false);
@@ -170,6 +172,7 @@ export const Menu = ({
                     onClickOpenVrmFile={handleClickOpenVrmFile}
                     onClickResetChatLog={handleClickResetChatLog}
                     onClickResetSystemPrompt={handleClickResetSystemPrompt}
+                    userId={userId} // 새로운 prop 추가
                 />
             )}
             {!showChatLog && assistantMessage && (

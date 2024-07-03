@@ -17,6 +17,37 @@ import characterPrompts, { CharacterPrompts } from "@/features/constants/prompts
 const m_plus_2 = M_PLUS_2({ variable: "--font-m-plus-2", display: "swap", preload: false });
 const montserrat = Montserrat({ variable: "--font-montserrat", display: "swap", subsets: ["latin"] });
 
+
+const easterEgg = `
+
+
+
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡐⠀⠀⠀⠀⠀⠀⠀⠀⠄⠠⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⢈⠐⡡⠀⠀⠀⠀⠀⡀⠌⡀⢃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⢐⠠⠂⣄⠀⠀⠀⠠⠐⡨⢀⠸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡆⠊⠈⠀⢐⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠄⡌⡢⠀⠄⠀⠀⡀⠀⠑⠄⡃⠀⠀⠀⠀⠀⠀⠀⠀⢔⠨⡢⣉⠖⡉⢕⠒⢤⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠄⢀⠈⢂⠅⠀⠠⠁⠠⢀⡒⢀⠀⠀⠀⠀⠀⢀⢐⠕⡡⢎⠔⡕⢨⠊⡔⡩⠢⡑⢕⣀⢀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⡀⠂⠀⡔⢁⠀⠄⠠⡀⡈⠐⠅⠠⡀⠀⠀⣄⠇⡱⡱⡨⡊⢜⢄⢣⡳⢈⣆⢙⡇⠧⣱⠉⢤⡂⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡌⡐⠀⡎⡀⠔⡀⠕⡐⠠⠘⠌⡌⠆⢐⠄⢰⠌⠼⠁⡊⠐⡣⢒⠤⠃⠳⡑⠲⡄⢫⢗⢬⡫⢳⠜⡀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⡸⠰⡄⢪⠰⠁⡢⢕⠈⢥⢅⠑⡜⣀⠚⣀⠗⢊⣎⠊⠑⠲⠄⠘⠢⠓⡷⢤⡉⡎⣘⠜⣅⢺⢜⢄⠗⡄⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠠⡎⢣⠆⡇⠠⢚⢠⠡⠈⡇⢠⠐⠥⢃⣌⡆⠅⡼⣹⡤⠄⢂⠀⡀⠀⢀⠁⠌⠀⠁⢞⢤⢫⡪⡳⡡⢊⢆⢅⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠘⡀⢫⡐⡇⢘⠘⡌⣀⡐⣄⡑⠀⠈⡋⠖⠘⡅⢘⠓⠷⢂⡀⠀⠈⠀⠀⠐⠀⢀⠂⡦⡜⡠⠳⡱⠈⡢⡃⠜⠄⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⡄⢁⠎⢘⠆⠐⡱⠈⢀⠀⠀⠀⠀⠀⠀⠠⢀⠇⢂⠀⠀⡠⣏⡛⢒⠴⢢⢖⢖⠙⠩⡞⡔⡸⡐⢽⢀⠵⡨⠁⠀⠀⠀
+⠀⠀⠀⠀⠀⠠⡑⠄⠰⢂⠊⠊⢠⠊⣄⢀⠌⠈⠈⠂⢊⡠⠐⠁⣇⠠⠀⠈⡲⠪⡠⠛⠸⠃⠁⠀⠈⠀⠓⡵⡈⠺⣄⠣⡊⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⢆⢰⠁⠁⠀⠀⠆⠄⠠⠀⠀⠄⡀⠀⣱⠀⠐⠄⡒⡐⠀⣄⡱⡘⣮⢀⠄⠁⠀⠀⢀⠀⡙⣎⢝⠔⡡⡫⠐⢢⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠌⠀⡖⢉⠀⠀⠀⠈⣕⠈⠒⠐⠄⡠⢑⠜⠀⢄⠠⠀⠉⠂⠄⠉⣉⢖⢣⢦⠄⣃⢊⠀⠀⢜⠌⡮⢳⢌⠢⢣⠀⠉⡆⡀⠀
+⠀⠀⠀⠀⠀⡊⢦⡈⠃⠀⠀⠀⠀⠀⠁⠅⠀⠠⡀⢁⠇⢒⠈⠤⠁⢌⠀⢃⠘⢔⠩⠓⠤⡔⠈⢆⠄⠀⡹⡂⡃⠈⠑⢧⡑⡩⡂⠎⠂⠀
+⠀⣠⣄⣠⠚⡤⢢⡂⣔⢠⠀⠀⠀⠀⢈⠂⣏⠆⠡⢰⠃⡈⢈⠂⠡⠀⠜⣠⢁⢖⢁⠦⢸⠁⣀⡨⠲⠄⢚⢜⠣⣄⡀⠠⠇⠐⠕⠀⠀⠀
+⠀⢸⢆⢺⢔⢬⢢⠋⢄⠇⠁⠀⠀⢀⠄⠁⠀⠀⠀⠐⡇⠀⠂⡌⢐⢁⠜⠀⠂⠂⢣⠐⡀⡱⠅⠤⡠⠀⣋⠈⠃⢶⡹⠈⠀⠀⠁⠀⠀⠀
+
+
+
+
+
+    "페코미코는 존재하니 믿을지어다. - 멜리사J"`;
+
+
 export default function Home() {
     const { viewer } = useContext(ViewerContext);
 
@@ -33,16 +64,27 @@ export default function Home() {
     const [showIntro, setShowIntro] = useState(true); // 인트로 화면 표시 여부
     const [showSettings, setShowSettings] = useState(false); // 설정 창 표시 여부
 
+
+    useEffect(() => {
+        console.log(easterEgg);
+    }, []);
+
     const resetChatLog = useCallback(() => {
         setChatLog([]);
-    }, []);
+        setSummary("");
+        const storageKey = `chatVRMParams_${userId}`;
+        if (userId.startsWith("session_")) {
+            sessionStorage.removeItem(storageKey);
+        } else {
+            window.localStorage.removeItem(storageKey);
+        }
+    }, [userId]);
 
     const handleUserIdSubmit = useCallback((inputUserId: string, isSession: boolean) => {
         setUserId(inputUserId);
         setShowIntro(false); // 인트로 화면 숨기기
     }, []);
 
-    // 추가된 부분: 설정 창 열기 핸들러
     const openSettings = useCallback(() => {
         setShowIntro(false);
         setShowSettings(true);
@@ -66,7 +108,7 @@ export default function Home() {
             setElevenLabsParam(params.elevenLabsParam);
             setChatLog(params.chatLog);
             setSummary(params.summary || "");
-            setCharacter(params.elevenLabsParam.voiceId as keyof CharacterPrompts); // 수정된 부분
+            setCharacter(params.elevenLabsParam.voiceId as keyof CharacterPrompts);
         } else {
             setCharacter("default");
         }
@@ -104,11 +146,7 @@ export default function Home() {
             setElevenLabsParam((prev) => ({ ...prev, voiceId: "" }));
             setSystemPrompt(SYSTEM_PROMPT);
             console.log("Character set to default");
-
-            // return;
-        }
-
-        else if (character.includes("miko")) {
+        } else if (character.includes("miko")) {
             document.body.style.backgroundImage = `url(/miko_1st.png)`;
             setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
             setSystemPrompt(characterPrompts["miko_1st"]);
@@ -118,18 +156,17 @@ export default function Home() {
             setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
             setSystemPrompt(characterPrompts["fubuki"]);
             console.log("Character set to:", "fubuki", "Prompt:", characterPrompts["fubuki"]);
-        }else if (character.includes("aqua")) {
+        } else if (character.includes("aqua")) {
             document.body.style.backgroundImage = `url(/aqua.png)`;
             setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
             setSystemPrompt(characterPrompts["aqua"]);
             console.log("Character set to:", "aqua", "Prompt:", characterPrompts["aqua"]);
-        }else if (character.includes("koyori")) {
+        } else if (character.includes("koyori")) {
             document.body.style.backgroundImage = `url(/koyori.png)`;
             setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
             setSystemPrompt(characterPrompts["koyori"]);
             console.log("Character set to:", "koyori", "Prompt:", characterPrompts["koyori"]);
-        }
-        else {
+        } else {
             document.body.style.backgroundImage = `url(/${character}.png)`;
             setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
             setSystemPrompt(characterPrompts[character]);
@@ -137,12 +174,10 @@ export default function Home() {
         }
 
         // 캐릭터 변경 이벤트 트리거
-        if(!character.includes("default")){
+        if (!character.includes("default")) {
             window.dispatchEvent(new CustomEvent("changeAvatar", { detail: character }));
         }
-
     };
-
 
     const handleChangeChatLog = useCallback(
         (targetIndex: number, text: string) => {
@@ -251,23 +286,18 @@ export default function Home() {
 
                 if ((elevenLabsParam.voiceId).includes("miko")) {
                     character = "miko_1st";
-                }
-
-                else if((elevenLabsParam.voiceId).includes("fubuki")){
+                } else if ((elevenLabsParam.voiceId).includes("fubuki")) {
                     character = "fubuki";
-                }
-                else if((elevenLabsParam.voiceId).includes("aqua")){
+                } else if ((elevenLabsParam.voiceId).includes("aqua")) {
                     character = "aqua";
-                }
-                else if((elevenLabsParam.voiceId).includes("koyori")){
+                } else if ((elevenLabsParam.voiceId).includes("koyori")) {
                     character = "koyori";
-                }
-                else {
+                } else {
                     character = elevenLabsParam.voiceId || "miko";
                 }
                 const ttsEndpoint = process.env.NEXT_PUBLIC_TTS_SERVER;
                 const response = await fetch(`${ttsEndpoint}/tts`, {
-                    //const response = await fetch(`http://localhost:3545/tts`, {
+                // const response = await fetch(`http://localhost:3545/tts`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -309,7 +339,7 @@ export default function Home() {
                     onChangeElevenLabsKey={setElevenLabsKey}
                     onSubmitUserId={handleUserIdSubmit}
                     onResetChatLog={resetChatLog}
-                    onOpenSettings={openSettings} // 추가된 부분
+                    onOpenSettings={openSettings}
                 />
             ) : (
                 <>
@@ -334,7 +364,8 @@ export default function Home() {
                         onChangeKoeiromapParam={setKoeiroParam}
                         handleClickResetChatLog={resetChatLog}
                         handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
-                        onOpenSettings={openSettings} // 추가된 부분
+                        onOpenSettings={openSettings}
+                        userId={userId} // 추가된 부분
                     />
                     <GitHubLink />
                 </>

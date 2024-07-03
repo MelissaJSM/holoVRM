@@ -3,9 +3,8 @@ import { IconButton } from "./iconButton";
 import { TextButton } from "./textButton";
 import { Message } from "@/features/messages/messages";
 import { KoeiroParam } from "@/features/constants/koeiroParam";
-import { Link } from "./link";
+import { ElevenLabsParam } from "@/features/constants/elevenLabsParam";
 import characterPrompts, { CharacterPrompts } from "@/features/constants/prompts"; // 타입과 기본 내보내기 import
-import { ElevenLabsParam } from "@/features/constants/elevenLabsParam"; // 추가된 import 구문
 
 type Props = {
     openAiKey: string;
@@ -14,6 +13,7 @@ type Props = {
     chatLog: Message[];
     elevenLabsParam: ElevenLabsParam; // 정확한 타입 사용
     koeiroParam: KoeiroParam;
+    userId: string; // 추가된 부분
     onClickClose: () => void;
     onChangeAiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
     onChangeElevenLabsKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -33,6 +33,7 @@ export const Settings = ({
                              systemPrompt,
                              elevenLabsParam,
                              koeiroParam,
+                             userId, // 추가된 부분
                              onClickClose,
                              onChangeSystemPrompt,
                              onChangeAiKey,
@@ -51,10 +52,9 @@ export const Settings = ({
         const selectedValue = event.target.value as keyof CharacterPrompts;
         setSelectedCharacter(selectedValue);
 
-        if(!selectedValue.includes("default")){
+        if (!selectedValue.includes("default")) {
             window.dispatchEvent(new CustomEvent("changeAvatar", { detail: selectedValue }));
         }
-
 
         let adjustedValue = selectedValue;
         let promptValue = selectedValue;
@@ -68,8 +68,7 @@ export const Settings = ({
         } else if (selectedValue.includes("aqua")) {
             adjustedValue = selectedValue;
             promptValue = "aqua";
-        }
-        else if (selectedValue.includes("koyori")) {
+        } else if (selectedValue.includes("koyori")) {
             adjustedValue = selectedValue;
             promptValue = "koyori";
         }
@@ -79,7 +78,6 @@ export const Settings = ({
         onChangeSystemPrompt(newEvent);
 
         // 변경된 캐릭터 정보를 저장
-        const userId = sessionStorage.getItem("sessionUserId") || "default_user";
         const updatedParams = { elevenLabsParam: { voiceId: adjustedValue }, systemPrompt: characterPrompts[promptValue] };
         if (userId.startsWith("session_")) {
             sessionStorage.setItem(`chatVRMParams_${userId}`, JSON.stringify(updatedParams));
@@ -94,13 +92,11 @@ export const Settings = ({
             body.style.backgroundImage = `url(/miko_1st.png)`;
         } else if (selectedCharacter.includes("fubuki")) {
             body.style.backgroundImage = `url(/fubuki.png)`;
-        }else if (selectedCharacter.includes("aqua")) {
+        } else if (selectedCharacter.includes("aqua")) {
             body.style.backgroundImage = `url(/aqua.png)`;
-        }else if (selectedCharacter.includes("koyori")) {
+        } else if (selectedCharacter.includes("koyori")) {
             body.style.backgroundImage = `url(/koyori.png)`;
-        }
-
-        else {
+        } else {
             body.style.backgroundImage = `url(/${selectedCharacter}.png)`;
         }
     }, [selectedCharacter]);
@@ -113,6 +109,16 @@ export const Settings = ({
         setIsVideoPlaying(false);
     };
 
+    const handleResetChatLog = () => {
+        onClickResetChatLog();
+        const storageKey = `chatVRMParams_${userId}`;
+        if (userId.startsWith("session_")) {
+            sessionStorage.removeItem(storageKey);
+        } else {
+            window.localStorage.removeItem(storageKey);
+        }
+    };
+
     const characterOptions = [
         { value: "default", label: "캐릭터를 선택해주세요", image: "/default.png" },
         { value: "miko_1st", label: "사쿠라 미코(1세대)", image: "/miko_1st.png" },
@@ -122,10 +128,13 @@ export const Settings = ({
         { value: "fubuki", label: "시라카미 후부키", image: "/fubuki.png" },
         { value: "fubuki_bunny", label: "시라카미 후부키(버니)", image: "/fubuki_bunny.png" },
         { value: "korone", label: "이누가미 코로네", image: "/korone.png" },
+        { value: "okayu", label: "네코마타 오카유", image: "/okayu.png" },
+        { value: "mio", label: "오오카미 미오", image: "/mio.png" },
         { value: "aqua_made", label: "미나토 아쿠아(메이드)", image: "/aqua_made.png" },
         { value: "aqua", label: "미나토 아쿠아(사복)", image: "/aqua.png" },
         { value: "koyori", label: "하쿠이 코요리", image: "/koyori.png" },
         { value: "koyori_off", label: "하쿠이 코요리(코트 탈의)", image: "/koyori.png" },
+        { value: "roboco", label: "로보코 씨", image: "/roboco.png" },
         // 추가적인 옵션들...
     ];
 
@@ -184,7 +193,7 @@ export const Settings = ({
                         <div className="my-40 bg-gray-100 p-8 rounded-md">
                             <div className="my-8 grid-cols-2">
                                 <div className="my-16 typography-20 font-bold">홀로라이브 멤버와의 채팅내역</div>
-                                <TextButton onClick={onClickResetChatLog}>채팅 내역 초기화</TextButton>
+                                <TextButton onClick={handleResetChatLog}>채팅 내역 초기화</TextButton>
                             </div>
                             <div className="my-8">
                                 {chatLog.map((value, index) => (

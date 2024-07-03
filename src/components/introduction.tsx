@@ -71,7 +71,7 @@ export const Introduction = ({ openAiKey, onChangeAiKey, onSubmitUserId, onReset
         <div className="mx-auto my-auto max-w-3xl max-h-full p-24 overflow-auto bg-white rounded-16">
           <div className="my-24">
             <div className="my-8 font-bold typography-20 text-secondary">
-              HoloVRM에 대하여
+              HoloVRM(0.6.0 beta)
             </div>
             <div>
               마이크, 문자 입력, 음성 합성 등을 이용해 웹 브라우저만으로 AI 홀로라이브 멤버와 대화를 즐길 수 있는 웹 브라우저 기반 대화 시스템입니다.
