@@ -121,20 +121,26 @@ export const Settings = ({
 
     const characterOptions = [
         { value: "default", label: "캐릭터를 선택해주세요", image: "/default.png" },
+        { value: "default", label: "----- 홀로라이브 0기생 -----", image: "/default.png" },
         { value: "miko_1st", label: "사쿠라 미코(1세대)", image: "/miko_1st.png" },
         { value: "miko_miko", label: "사쿠라 미코(무녀)", image: "/miko_miko.png" },
         { value: "miko_3rd", label: "사쿠라 미코(3세대)", image: "/miko_3rd.png" },
-        { value: "pekora", label: "우사다 페코라", image: "/pekora.png" },
+        { value: "roboco", label: "로보코 씨", image: "/roboco.png" },
+        { value: "default", label: "----- 홀로라이브 2기생 -----", image: "/default.png" },
+        { value: "aqua_made", label: "미나토 아쿠아(메이드)", image: "/aqua_made.png" },
+        { value: "aqua", label: "미나토 아쿠아(사복)", image: "/aqua.png" },
+        { value: "default", label: "----- 홀로라이브 게이머즈 -----", image: "/default.png" },
         { value: "fubuki", label: "시라카미 후부키", image: "/fubuki.png" },
         { value: "fubuki_bunny", label: "시라카미 후부키(버니)", image: "/fubuki_bunny.png" },
         { value: "korone", label: "이누가미 코로네", image: "/korone.png" },
         { value: "okayu", label: "네코마타 오카유", image: "/okayu.png" },
         { value: "mio", label: "오오카미 미오", image: "/mio.png" },
-        { value: "aqua_made", label: "미나토 아쿠아(메이드)", image: "/aqua_made.png" },
-        { value: "aqua", label: "미나토 아쿠아(사복)", image: "/aqua.png" },
+        { value: "default", label: "----- 홀로라이브 3기생 -----", image: "/default.png" },
+        { value: "pekora", label: "우사다 페코라", image: "/pekora.png" },
+        { value: "default", label: "----- 비밀결사 holoX -----", image: "/default.png" },
         { value: "koyori", label: "하쿠이 코요리", image: "/koyori.png" },
         { value: "koyori_off", label: "하쿠이 코요리(코트 탈의)", image: "/koyori.png" },
-        { value: "roboco", label: "로보코 씨", image: "/roboco.png" },
+
         // 추가적인 옵션들...
     ];
 
@@ -168,10 +174,22 @@ export const Settings = ({
                                 id="select-dropdown"
                                 onChange={handleCharacterChange}
                                 value={selectedCharacter}
-                                style={{ backgroundImage: `url(${characterOptions.find(option => option.value === selectedCharacter)?.image})`, backgroundSize: '24px', backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat' }}
+                                style={{
+                                    backgroundImage: `url(${characterOptions.find(option => option.value === selectedCharacter)?.image})`,
+                                    backgroundSize: '24px',
+                                    backgroundPosition: 'right 8px center',
+                                    backgroundRepeat: 'no-repeat',
+                                    textAlign: characterOptions.find(option => option.value === selectedCharacter)?.value === "default" ? 'center' : 'left' // 텍스트 정렬 설정
+                                }}
                             >
                                 {characterOptions.map(option => (
-                                    <option key={option.value} value={option.value}>
+                                    <option
+                                        key={option.value}
+                                        value={option.value}
+                                        style={{
+                                            textAlign: option.value === "default" ? 'center' : 'left' // 텍스트 정렬 설정
+                                        }}
+                                    >
                                         {option.label}
                                     </option>
                                 ))}
