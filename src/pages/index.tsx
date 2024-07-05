@@ -9,8 +9,9 @@ import { KoeiroParam, DEFAULT_KOEIRO_PARAM } from "@/features/constants/koeiroPa
 import { M_PLUS_2, Montserrat } from "next/font/google";
 import { Introduction } from "@/components/introduction";
 import { Menu } from "@/components/menu";
-import { GitHubLink } from "@/components/githubLink";
 import { Meta } from "@/components/meta";
+import { GitHubLink } from "@/components/githubLink";
+
 import { ElevenLabsParam, DEFAULT_ELEVEN_LABS_PARAM } from "@/features/constants/elevenLabsParam";
 import characterPrompts, { CharacterPrompts } from "@/features/constants/prompts"; // 타입과 기본 내보내기 import
 
@@ -275,8 +276,8 @@ export default function Home() {
                     character = elevenLabsParam.voiceId || "miko";
                 }
                 const ttsEndpoint = process.env.NEXT_PUBLIC_TTS_SERVER;
-                const response = await fetch(`${ttsEndpoint}/tts`, {
-                    // const response = await fetch(`http://localhost:3545/tts`, {
+                //const response = await fetch(`${ttsEndpoint}/tts`, {
+                     const response = await fetch(`http://localhost:3545/tts`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
