@@ -25,6 +25,8 @@ ChatVRM : <a href="https://github.com/zoan37/ChatVRM">https://github.com/zoan37/
 
 <h2>changelog</h2>
 
+0.7.0 sql 데이터베이스와 연결 된 한층 강화된 로그인 시스템 구현<br>
+
 0.6.3 대화창 5초뒤에 사라지도록 수정<br>
 0.6.2 멤버 선택창 가시성 향상<br>
 0.6.1 대화창 음성 종료 후 5초뒤에 사라지도록 변경<br>
