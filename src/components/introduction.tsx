@@ -1,12 +1,13 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { Link } from './link';
+import { useRouter } from 'next/router';
 
 type Props = {
   openAiKey: string;
   elevenLabsKey: string;
   onChangeAiKey: (openAiKey: string) => void;
   onChangeElevenLabsKey: (elevenLabsKey: string) => void;
-  onSubmitUserId: (userId: string, isSession: boolean) => void;
+  onSubmitUserId: (userId: string, isSession: boolean, lastCharacter?: string) => void;
   onResetChatLog: () => void;
   onOpenSettings: () => void;
 };
@@ -14,27 +15,33 @@ type Props = {
 export const Introduction = ({ openAiKey, onChangeAiKey, onSubmitUserId, onResetChatLog, onOpenSettings }: Props) => {
   const [opened, setOpened] = useState(true);
   const [userId, setUserId] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const router = useRouter();
 
-  const handleStart = () => {
-    if (userId) {
-      const previousUserId = window.localStorage.getItem('previousUserId');
-      if (previousUserId && previousUserId === userId) {
-        const continueWithPrevious = window.confirm(`이전에 사용하던 User ID가 발견되었습니다: ${previousUserId}\n이어서 하시겠습니까?`);
-        if (continueWithPrevious) {
+  const handleStart = async () => {
+    if (userId && password) {
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId, password })
+        });
+        const data = await response.json();
+        if (data.success) {
           onResetChatLog();
-          onSubmitUserId(previousUserId, false);
+          onSubmitUserId(userId, false, data.lastCharacter); // lastCharacter 추가
           setOpened(false);
         } else {
-          alert("취소되었습니다.")
+          setError(data.message);
         }
-      } else {
-        alert('해당 ID가 발견되지 않았으므로 처음부터 시작합니다.\nID를 반드시 기억해주세요. ID 입력 후 대화를 이어나갈 수 있습니다.');
-        window.localStorage.setItem('previousUserId', userId);
-        onResetChatLog();
-        onSubmitUserId(userId, false);
-        setOpened(false);
-        onOpenSettings(); // 설정 창 열기
+      } catch (error) {
+        setError('로그인 중 오류가 발생했습니다.');
       }
+    } else if (userId) {
+      alert('비밀번호를 입력해 주세요.');
     } else {
       const confirmSession = window.confirm('설정창으로 이동합니다. 홀로라이브 멤버를 선택 해 주세요.\n해당 대화는 저장되지 않는 모드입니다. 계속하시겠습니까?');
       if (confirmSession) {
@@ -49,20 +56,56 @@ export const Introduction = ({ openAiKey, onChangeAiKey, onSubmitUserId, onReset
     }
   };
 
-  const handleDeleteUser = () => {
-    const deleteUserId = window.prompt('삭제할 사용자 ID를 입력하세요:');
-    if (deleteUserId) {
-      const savedUserId = window.localStorage.getItem('previousUserId');
-      if (savedUserId && savedUserId === deleteUserId) {
-        const confirmDelete = window.confirm(`ID ${deleteUserId}를 삭제하시겠습니까?`);
-        if (confirmDelete) {
-          window.localStorage.removeItem(`chatVRMParams_${deleteUserId}`);
-          window.localStorage.removeItem('previousUserId');
-          alert('삭제가 완료되었습니다.');
-        }
-      } else {
-        alert('일치하는 ID가 없습니다.');
+  const handleSignup = () => {
+    router.push('/signup');
+  };
+
+  const handleDeleteUser = async () => {
+    if (!userId || !password) {
+      setError('ID와 비밀번호를 입력하세요.');
+      return;
+    }
+
+    // 아이디와 비밀번호 확인
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, password })
+      });
+      const data = await response.json();
+      if (!data.success) {
+        setError('계정이 존재하지 않거나 ID와 비밀번호가 일치하지 않습니다.');
+        return;
       }
+    } catch (error) {
+      setError('계정 확인 중 오류가 발생했습니다.');
+      return;
+    }
+
+    // 계정이 존재하면 삭제 확인 메시지 띄우기
+    const confirmDelete = window.confirm('정말로 계정을 삭제하시겠습니까?\n삭제된 계정은 복구되지 않습니다.');
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch('/api/deleteAccount', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, password })
+      });
+      const data = await response.json();
+      if (data.success) {
+        alert('계정이 삭제되었습니다.');
+        router.push('/');
+      } else {
+        setError(data.message);
+      }
+    } catch (error) {
+      setError('계정 삭제 중 오류가 발생했습니다.');
     }
   };
 
@@ -111,7 +154,6 @@ export const Introduction = ({ openAiKey, onChangeAiKey, onSubmitUserId, onReset
                 type="text"
                 placeholder="Open AI Key"
                 value={"구현중"}
-                // onChange={"error"}
                 className="my-4 px-16 py-8 w-full h-40 bg-surface3 hover:bg-surface3-hover rounded-4 text-ellipsis"
             ></input>
             <div>
@@ -128,19 +170,33 @@ export const Introduction = ({ openAiKey, onChangeAiKey, onSubmitUserId, onReset
             <div className="my-8 font-bold typography-20 text-secondary">사용자 ID</div>
             <input
                 type="text"
-                placeholder="이 공간을 비워두면 기록없이 대화가 시작됩니다."
+                placeholder="ID를 입력하세요"
                 value={userId}
                 onChange={(e) => setUserId(e.target.value)}
                 className="my-4 px-16 py-8 w-full h-40 bg-surface3 hover:bg-surface3-hover rounded-4 text-ellipsis"
-            ></input>
+            />
+            <div className="my-8 font-bold typography-20 text-secondary">비밀번호</div>
+            <input
+                type="password"
+                placeholder="비밀번호를 입력하세요"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="my-4 px-16 py-8 w-full h-40 bg-surface3 hover:bg-surface3-hover rounded-4 text-ellipsis"
+            />
           </div>
+          {error && <div className="my-4 text-red-600">{error}</div>}
           <div className="my-24">
             <button onClick={handleStart} className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white px-24 py-8 rounded-oval">
               이해하였으며 시작합니다.
             </button>
           </div>
           <div className="my-24">
-            <button onClick={handleDeleteUser} className="font-bold text-white px-24 py-8 rounded-oval" style={{ backgroundColor: '#f56565', color: 'white' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e53e3e'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f56565'} onMouseDown={(e) => e.currentTarget.style.backgroundColor = '#c53030'} onMouseUp={(e) => e.currentTarget.style.backgroundColor = '#e53e3e'}>
+            <button onClick={handleSignup} className="font-bold text-white px-24 py-8 rounded-oval" style={{ backgroundColor: '#48BB78', color: 'white' }}>
+              회원가입
+            </button>
+          </div>
+          <div className="my-24">
+            <button onClick={handleDeleteUser} className="font-bold text-white px-24 py-8 rounded-oval" style={{ backgroundColor: '#f56565', color: 'white' }}>
               ID 삭제하기
             </button>
           </div>

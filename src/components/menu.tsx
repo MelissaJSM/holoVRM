@@ -21,12 +21,15 @@ type Props = {
     onChangeElevenLabsKey: (key: string) => void;
     onChangeChatLog: (index: number, text: string) => void;
     onChangeElevenLabsParam: (param: ElevenLabsParam) => void;
-    onChangeKoeiromapParam: (param: KoeiroParam) => void;
+    onChangeKoeiroParam: (param: KoeiroParam) => void;
     handleClickResetChatLog: () => void;
     handleClickResetSystemPrompt: () => void;
     onOpenSettings: () => void;
-    userId: string; // 새로운 prop 추가
-    showAssistantMessage: boolean; // 새로운 prop 추가
+    userId: string;
+    showAssistantMessage: boolean;
+    summary: string;
+    setSummary: React.Dispatch<React.SetStateAction<string>>;
+    lastCharacter?: string; // 추가된 부분
 };
 
 export const Menu = ({
@@ -42,12 +45,15 @@ export const Menu = ({
                          onChangeElevenLabsKey,
                          onChangeChatLog,
                          onChangeElevenLabsParam,
-                         onChangeKoeiromapParam,
+                         onChangeKoeiroParam,
                          handleClickResetChatLog,
                          handleClickResetSystemPrompt,
-                         onOpenSettings, // 새로운 prop 추가
-                         userId, // 새로운 prop 추가
-                         showAssistantMessage, // 새로운 prop 추가
+                         onOpenSettings,
+                         userId,
+                         showAssistantMessage,
+                         summary,
+                         setSummary,
+                         lastCharacter // 추가된 부분
                      }: Props) => {
     const [showSettings, setShowSettings] = useState(false);
     const [showChatLog, setShowChatLog] = useState(false);
@@ -86,12 +92,12 @@ export const Menu = ({
 
     const handleChangeKoeiroParam = useCallback(
         (x: number, y: number) => {
-            onChangeKoeiromapParam({
+            onChangeKoeiroParam({
                 speakerX: x,
                 speakerY: y,
             });
         },
-        [onChangeKoeiromapParam]
+        [onChangeKoeiroParam]
     );
 
     const handleClickOpenVrmFile = useCallback(() => {
@@ -174,7 +180,10 @@ export const Menu = ({
                     onClickOpenVrmFile={handleClickOpenVrmFile}
                     onClickResetChatLog={handleClickResetChatLog}
                     onClickResetSystemPrompt={handleClickResetSystemPrompt}
-                    userId={userId} // 새로운 prop 추가
+                    userId={userId} // 추가된 부분
+                    summary={summary} // 추가된 부분
+                    setSummary={setSummary} // 추가된 부분
+                    lastCharacter={lastCharacter} // 추가된 부분
                 />
             )}
             {!showChatLog && showAssistantMessage && assistantMessage && (

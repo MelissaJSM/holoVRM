@@ -1,19 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { IconButton } from "./iconButton";
 import { TextButton } from "./textButton";
 import { Message } from "@/features/messages/messages";
 import { KoeiroParam } from "@/features/constants/koeiroParam";
 import { ElevenLabsParam } from "@/features/constants/elevenLabsParam";
-import characterPrompts, { CharacterPrompts } from "@/features/constants/prompts"; // 타입과 기본 내보내기 import
+import characterPrompts, { CharacterPrompts } from "@/features/constants/prompts";
+import { ViewerContext } from "@/features/vrmViewer/viewerContext";
+
+const avatarBaseUrl = process.env.NEXT_PUBLIC_AVATAR_BASE_URL;
 
 type Props = {
     openAiKey: string;
     elevenLabsKey: string;
     systemPrompt: string;
     chatLog: Message[];
-    elevenLabsParam: ElevenLabsParam; // 정확한 타입 사용
+    elevenLabsParam: ElevenLabsParam;
     koeiroParam: KoeiroParam;
-    userId: string; // 추가된 부분
+    userId: string;
+    summary: string;
+    setSummary: React.Dispatch<React.SetStateAction<string>>;
+    lastCharacter?: string;
     onClickClose: () => void;
     onChangeAiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
     onChangeElevenLabsKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -29,11 +35,14 @@ type Props = {
 export const Settings = ({
                              openAiKey,
                              elevenLabsKey,
-                             chatLog,
                              systemPrompt,
+                             chatLog,
                              elevenLabsParam,
                              koeiroParam,
-                             userId, // 추가된 부분
+                             userId,
+                             summary,
+                             setSummary,
+                             lastCharacter,
                              onClickClose,
                              onChangeSystemPrompt,
                              onChangeAiKey,
@@ -45,12 +54,46 @@ export const Settings = ({
                              onClickResetChatLog,
                              onClickResetSystemPrompt,
                          }: Props) => {
-    const [selectedCharacter, setSelectedCharacter] = useState(elevenLabsParam.voiceId || "default");
-    const [isVideoPlaying, setIsVideoPlaying] = useState(false); // 비디오 재생 상태 추가
+    const { viewer } = useContext(ViewerContext);
+    const [selectedCharacter, setSelectedCharacter] = useState(lastCharacter || "default");
+    const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
-    const handleCharacterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    useEffect(() => {
+        const fetchLastCharacter = async () => {
+            try {
+                const response = await fetch(`/api/getLastCharacter?userId=${userId}`);
+                const data = await response.json();
+                if (data.success) {
+                    const character = data.lastCharacter || "default";
+                    setSelectedCharacter(character);
+                    const characterPrompt = characterPrompts[character as keyof CharacterPrompts];
+                    onChangeElevenLabsVoice({ target: { value: character } } as React.ChangeEvent<HTMLSelectElement>);
+                    onChangeSystemPrompt({ target: { value: characterPrompt } } as React.ChangeEvent<HTMLTextAreaElement>);
+                    viewer.loadVrm(`${avatarBaseUrl}${character}.vrm`); // 클라우드 플레어 URL 설정
+                }
+            } catch (error) {
+                console.error('Error fetching last character:', error);
+            }
+        };
+
+        if (!userId.startsWith("session_")) {
+            fetchLastCharacter();
+        }
+    }, [userId, onChangeElevenLabsVoice, onChangeSystemPrompt, viewer]);
+
+    useEffect(() => {
+        console.log('초기 설정 캐릭터:', selectedCharacter);
+
+        const characterPrompt = characterPrompts[selectedCharacter as keyof CharacterPrompts];
+        onChangeSystemPrompt({ target: { value: characterPrompt } } as React.ChangeEvent<HTMLTextAreaElement>);
+
+
+    }, [selectedCharacter]);
+
+    const handleCharacterChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedValue = event.target.value as keyof CharacterPrompts;
         setSelectedCharacter(selectedValue);
+        console.log('캐릭터 변경:', selectedValue);
 
         if (!selectedValue.includes("default")) {
             window.dispatchEvent(new CustomEvent("changeAvatar", { detail: selectedValue }));
@@ -73,17 +116,28 @@ export const Settings = ({
             promptValue = "koyori";
         }
 
+        const characterPrompt = characterPrompts[promptValue as keyof CharacterPrompts];
         onChangeElevenLabsVoice({ target: { value: adjustedValue } } as React.ChangeEvent<HTMLSelectElement>);
-        const newEvent = { target: { value: characterPrompts[promptValue] } } as React.ChangeEvent<HTMLTextAreaElement>;
-        onChangeSystemPrompt(newEvent);
+        onChangeSystemPrompt({ target: { value: characterPrompt } } as React.ChangeEvent<HTMLTextAreaElement>);
 
-        // 변경된 캐릭터 정보를 저장
-        const updatedParams = { elevenLabsParam: { voiceId: adjustedValue }, systemPrompt: characterPrompts[promptValue] };
+        const updatedParams = { elevenLabsParam: { voiceId: adjustedValue }, systemPrompt: characterPrompt };
         if (userId.startsWith("session_")) {
             sessionStorage.setItem(`chatVRMParams_${userId}`, JSON.stringify(updatedParams));
         } else {
             window.localStorage.setItem(`chatVRMParams_${userId}`, JSON.stringify(updatedParams));
         }
+
+        if (!userId.startsWith("session_")) {
+            await fetch('/api/updateCharacter', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userId, lastCharacter: adjustedValue })
+            });
+        }
+
+        viewer.loadVrm(`${avatarBaseUrl}${adjustedValue}.vrm`); // 클라우드 플레어 URL 설정
     };
 
     useEffect(() => {
@@ -109,8 +163,16 @@ export const Settings = ({
         setIsVideoPlaying(false);
     };
 
-    const handleResetChatLog = () => {
+    const handleResetChatLog = async () => {
+        await fetch(`/api/chat?userId=${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
         onClickResetChatLog();
+        setSummary("");
         const storageKey = `chatVRMParams_${userId}`;
         if (userId.startsWith("session_")) {
             sessionStorage.removeItem(storageKey);
@@ -129,6 +191,7 @@ export const Settings = ({
         { value: "default", label: "----- 홀로라이브 2기생 -----", image: "/default.png" },
         { value: "aqua_made", label: "미나토 아쿠아(메이드)", image: "/aqua_made.png" },
         { value: "aqua", label: "미나토 아쿠아(사복)", image: "/aqua.png" },
+        { value: "shion", label: "무라사키 시온", image: "/shion.png" },
         { value: "default", label: "----- 홀로라이브 게이머즈 -----", image: "/default.png" },
         { value: "fubuki", label: "시라카미 후부키", image: "/fubuki.png" },
         { value: "fubuki_bunny", label: "시라카미 후부키(버니)", image: "/fubuki_bunny.png" },
@@ -140,6 +203,8 @@ export const Settings = ({
         { value: "default", label: "----- 비밀결사 holoX -----", image: "/default.png" },
         { value: "koyori", label: "하쿠이 코요리", image: "/koyori.png" },
         { value: "koyori_off", label: "하쿠이 코요리(코트 탈의)", image: "/koyori.png" },
+        { value: "default", label: "----- Hololive Myth -----", image: "/default.png" },
+        { value: "gura", label: "가우르 구라", image: "/gura.png" },
 
         // 추가적인 옵션들...
     ];
@@ -179,7 +244,7 @@ export const Settings = ({
                                     backgroundSize: '24px',
                                     backgroundPosition: 'right 8px center',
                                     backgroundRepeat: 'no-repeat',
-                                    textAlign: characterOptions.find(option => option.value === selectedCharacter)?.value === "default" ? 'center' : 'left' // 텍스트 정렬 설정
+                                    textAlign: characterOptions.find(option => option.value === selectedCharacter)?.value === "default" ? 'center' : 'left'
                                 }}
                             >
                                 {characterOptions.map(option => (
@@ -187,7 +252,7 @@ export const Settings = ({
                                         key={option.value}
                                         value={option.value}
                                         style={{
-                                            textAlign: option.value === "default" ? 'center' : 'left' // 텍스트 정렬 설정
+                                            textAlign: option.value === "default" ? 'center' : 'left'
                                         }}
                                     >
                                         {option.label}

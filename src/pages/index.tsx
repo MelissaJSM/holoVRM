@@ -6,7 +6,6 @@ import { speakCharacter } from "@/features/messages/speakCharacter";
 import { MessageInputContainer } from "@/components/messageInputContainer";
 import { SYSTEM_PROMPT } from "@/features/constants/systemPromptConstants";
 import { KoeiroParam, DEFAULT_KOEIRO_PARAM } from "@/features/constants/koeiroParam";
-import { M_PLUS_2, Montserrat } from "next/font/google";
 import { Introduction } from "@/components/introduction";
 import { Menu } from "@/components/menu";
 import { Meta } from "@/components/meta";
@@ -15,18 +14,18 @@ import { GitHubLink } from "@/components/githubLink";
 import { ElevenLabsParam, DEFAULT_ELEVEN_LABS_PARAM } from "@/features/constants/elevenLabsParam";
 import characterPrompts, { CharacterPrompts } from "@/features/constants/prompts"; // 타입과 기본 내보내기 import
 
-const m_plus_2 = M_PLUS_2({ variable: "--font-m-plus-2", display: "swap", preload: false });
-const montserrat = Montserrat({ variable: "--font-montserrat", display: "swap", subsets: ["latin"] });
+import { M_PLUS_2, Montserrat } from 'next/font/google';
 
+const m_plus_2 = M_PLUS_2({ variable: "--font-m-plus-2", subsets: ["latin"], display: "swap" });
+const montserrat = Montserrat({ variable: "--font-montserrat", subsets: ["latin"], display: "swap" });
 
-const easterEgg = `
-// 생략된 내용
-`;
+const easterEgg ='';
 
 export default function Home() {
     const { viewer } = useContext(ViewerContext);
 
     const [userId, setUserId] = useState("");
+    const [lastCharacter, setLastCharacter] = useState<string | undefined>(undefined); // lastCharacter 추가
     const [systemPrompt, setSystemPrompt] = useState(SYSTEM_PROMPT);
     const [openAiKey, setOpenAiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_KEY || "");
     const [elevenLabsKey, setElevenLabsKey] = useState(process.env.NEXT_PUBLIC_ELEVEN_LABS_KEY || "");
@@ -55,9 +54,13 @@ export default function Home() {
         }
     }, [userId]);
 
-    const handleUserIdSubmit = useCallback((inputUserId: string, isSession: boolean) => {
+    const handleUserIdSubmit = useCallback((inputUserId: string, isSession: boolean, lastCharacter?: string) => {
         setUserId(inputUserId);
+        setLastCharacter(lastCharacter); // lastCharacter 설정
         setShowIntro(false); // 인트로 화면 숨기기
+        if (!isSession) {
+            loadParams(inputUserId); // userId가 설정된 후에 호출
+        }
     }, []);
 
     const openSettings = useCallback(() => {
@@ -65,27 +68,15 @@ export default function Home() {
         setShowSettings(true);
     }, []);
 
-    useEffect(() => {
-        if (userId) {
-            if (userId.startsWith("session_")) {
-                loadDefaultParams();
-            } else {
-                loadParams();
-            }
-        }
-    }, [userId]);
-
-    const loadParams = () => {
-        const savedParams = window.localStorage.getItem(`chatVRMParams_${userId}`);
-        if (savedParams) {
-            const params = JSON.parse(savedParams);
-            setSystemPrompt(params.systemPrompt);
-            setElevenLabsParam(params.elevenLabsParam);
-            setChatLog(params.chatLog);
-            setSummary(params.summary || "");
-            setCharacter(params.elevenLabsParam.voiceId as keyof CharacterPrompts);
-        } else {
-            setCharacter("default");
+    const loadParams = async (inputUserId: string) => {
+        const response = await fetch('/api/chat?userId=' + inputUserId);
+        const data = await response.json();
+        if (data.success) {
+            const logs = data.chatLogs.map((log: { role: string; message: string }) => ({
+                role: log.role,
+                content: log.message // message를 content로 변환
+            }));
+            setChatLog(logs);
         }
     };
 
@@ -98,22 +89,14 @@ export default function Home() {
     };
 
     useEffect(() => {
-        if (userId.startsWith("session_")) {
-            process.nextTick(() => {
-                sessionStorage.setItem(
-                    `chatVRMParams_${userId}`,
-                    JSON.stringify({ systemPrompt, elevenLabsParam, chatLog, summary })
-                );
-            });
-        } else if (userId) {
-            process.nextTick(() => {
-                window.localStorage.setItem(
-                    `chatVRMParams_${userId}`,
-                    JSON.stringify({ systemPrompt, elevenLabsParam, chatLog, summary })
-                );
-            });
+        if (userId) {
+            if (userId.startsWith("session_")) {
+                loadDefaultParams();
+            } else {
+                loadParams(userId);
+            }
         }
-    }, [systemPrompt, elevenLabsParam, chatLog, summary, userId]);
+    }, [userId]);
 
     const setCharacter = (character: keyof CharacterPrompts | "default") => {
         if (character === "default") {
@@ -254,13 +237,9 @@ export default function Home() {
                 const recentMessages = [newMessage, newAssistantMessage];
                 const chatSummary = await summarizeChat(recentMessages, openAiKey);
                 setSummary(prevSummary => `${prevSummary} ${chatSummary}`);
-                console.log("Chat Summary:", chatSummary); // 요약 내용을 콘솔에 출력
 
                 const screenplays = textsToScreenplay([gptResponse], koeiroParam);
                 const screenplay = screenplays[0];
-
-                console.log("Emotion:", screenplay.expression);
-                console.log("Message:", screenplay.talk.message);
 
                 let character;
 
@@ -275,12 +254,14 @@ export default function Home() {
                 } else {
                     character = elevenLabsParam.voiceId || "miko";
                 }
+
                 const ttsEndpoint = process.env.NEXT_PUBLIC_TTS_SERVER;
-                //const response = await fetch(`${ttsEndpoint}/tts`, {
-                     const response = await fetch(`http://localhost:3545/tts`, {
-                    method: "POST",
+                const response = await fetch(`${ttsEndpoint}/tts`, {
+                    //const response = await fetch(`http://localhost:3545/tts`, {
+
+                    method: 'POST',
                     headers: {
-                        "Content-Type": "application/json",
+                        'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
                         text: screenplay.talk.message,
@@ -300,13 +281,41 @@ export default function Home() {
                     setAssistantMessage(gptResponse);
                     setShowAssistantMessage(true); // 대화창을 다시 표시
                 }, undefined, audioBuffer);
+
+                // 대화 기록 저장 (로그인한 사용자인 경우에만)
+                if (!userId.startsWith("session_")) {
+                    await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            userId,
+                            role: 'user',
+                            message: text
+                        }),
+                    });
+
+                    await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            userId,
+                            role: 'assistant',
+                            message: gptResponse
+                        }),
+                    });
+                }
+
             } catch (error) {
                 console.error("Error sending chat:", error);
             } finally {
                 setChatProcessing(false);
             }
         },
-        [chatLog, elevenLabsKey, elevenLabsParam, handleSpeakAi, koeiroParam, openAiKey, summary, systemPrompt]
+        [chatLog, elevenLabsKey, elevenLabsParam, handleSpeakAi, koeiroParam, openAiKey, summary, systemPrompt, userId]
     );
 
     return (
@@ -342,12 +351,15 @@ export default function Home() {
                         onChangeSystemPrompt={setSystemPrompt}
                         onChangeChatLog={handleChangeChatLog}
                         onChangeElevenLabsParam={setElevenLabsParam}
-                        onChangeKoeiromapParam={setKoeiroParam}
+                        onChangeKoeiroParam={setKoeiroParam}
                         handleClickResetChatLog={resetChatLog}
                         handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
                         onOpenSettings={openSettings}
-                        userId={userId} // 추가된 부분
-                        showAssistantMessage={showAssistantMessage} // 추가된 부분
+                        userId={userId}
+                        summary={summary}
+                        setSummary={setSummary}
+                        showAssistantMessage={showAssistantMessage}
+                        lastCharacter={lastCharacter} // 추가된 부분
                     />
                     <GitHubLink />
                 </>
