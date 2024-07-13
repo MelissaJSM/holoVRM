@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 const Signup = () => {
@@ -6,7 +6,29 @@ const Signup = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
+    const [turnstileToken, setTurnstileToken] = useState<string>('');
     const router = useRouter();
+
+    useEffect(() => {
+        const script = document.createElement('script');
+        script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+        script.async = true;
+        script.onload = () => {
+            if (window.turnstile) {
+                window.turnstile.render('#turnstile-widget', {
+                    sitekey: process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY!,
+                    callback: (token: string) => {
+                        setTurnstileToken(token);
+                    },
+                });
+            }
+        };
+        document.body.appendChild(script);
+
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, []);
 
     const handleSignup = async () => {
         if (password !== confirmPassword) {
@@ -20,7 +42,7 @@ const Signup = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ userId, password })
+                body: JSON.stringify({ userId, password, turnstileToken })
             });
             const data = await response.json();
             if (data.success) {
@@ -77,12 +99,14 @@ const Signup = () => {
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             className="my-4 px-16 py-8 w-full h-40 bg-surface3 hover:bg-surface3-hover rounded-4 text-ellipsis"
                         />
+                        <div id="turnstile-widget" className="my-4"></div>
                         {error && <div className="my-4 text-red-600">{error}</div>}
                         <br />
                         <br />
                         <button
                             onClick={handleSignup}
                             className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white px-24 py-8 rounded-oval"
+                            disabled={!turnstileToken}
                         >
                             회원가입
                         </button>

@@ -25,6 +25,10 @@ ChatVRM : <a href="https://github.com/zoan37/ChatVRM">https://github.com/zoan37/
 
 <h2>changelog</h2>
 
+0.8.1 비회원 접속시 배경화면 로딩에 문제가생기던 현상 수정<br>
+0.8.0 츠노마키 와타메, 유키하나 라미, 모모스즈 네네, 라프라스 다크니스 추가<br>
+
+0.7.1 회원가입 CloudFlare Turnstile 적용<br>
 0.7.0 sql 데이터베이스와 연결 된 한층 강화된 로그인 시스템 구현<br>
 
 0.6.3 대화창 5초뒤에 사라지도록 수정<br>

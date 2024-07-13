@@ -60,25 +60,34 @@ export const Settings = ({
 
     useEffect(() => {
         const fetchLastCharacter = async () => {
-            try {
-                const response = await fetch(`/api/getLastCharacter?userId=${userId}`);
-                const data = await response.json();
-                if (data.success) {
-                    const character = data.lastCharacter || "default";
-                    setSelectedCharacter(character);
-                    const characterPrompt = characterPrompts[character as keyof CharacterPrompts];
-                    onChangeElevenLabsVoice({ target: { value: character } } as React.ChangeEvent<HTMLSelectElement>);
-                    onChangeSystemPrompt({ target: { value: characterPrompt } } as React.ChangeEvent<HTMLTextAreaElement>);
-                    viewer.loadVrm(`${avatarBaseUrl}${character}.vrm`); // 클라우드 플레어 URL 설정
+            if (userId.startsWith("session_")) {
+                const sessionParams = sessionStorage.getItem(`chatVRMParams_${userId}`);
+                if (sessionParams) {
+                    const { elevenLabsParam, systemPrompt } = JSON.parse(sessionParams);
+                    setSelectedCharacter(elevenLabsParam.voiceId);
+                    onChangeElevenLabsVoice({ target: { value: elevenLabsParam.voiceId } } as React.ChangeEvent<HTMLSelectElement>);
+                    onChangeSystemPrompt({ target: { value: systemPrompt } } as React.ChangeEvent<HTMLTextAreaElement>);
+                    viewer.loadVrm(`${avatarBaseUrl}${elevenLabsParam.voiceId}.vrm`);
                 }
-            } catch (error) {
-                console.error('Error fetching last character:', error);
+            } else {
+                try {
+                    const response = await fetch(`/api/getLastCharacter?userId=${userId}`);
+                    const data = await response.json();
+                    if (data.success) {
+                        const character = data.lastCharacter || "default";
+                        setSelectedCharacter(character);
+                        const characterPrompt = characterPrompts[character as keyof CharacterPrompts];
+                        onChangeElevenLabsVoice({ target: { value: character } } as React.ChangeEvent<HTMLSelectElement>);
+                        onChangeSystemPrompt({ target: { value: characterPrompt } } as React.ChangeEvent<HTMLTextAreaElement>);
+                        viewer.loadVrm(`${avatarBaseUrl}${character}.vrm`);
+                    }
+                } catch (error) {
+                    console.error('Error fetching last character:', error);
+                }
             }
         };
 
-        if (!userId.startsWith("session_")) {
-            fetchLastCharacter();
-        }
+        fetchLastCharacter();
     }, [userId, onChangeElevenLabsVoice, onChangeSystemPrompt, viewer]);
 
     useEffect(() => {
@@ -86,7 +95,6 @@ export const Settings = ({
 
         const characterPrompt = characterPrompts[selectedCharacter as keyof CharacterPrompts];
         onChangeSystemPrompt({ target: { value: characterPrompt } } as React.ChangeEvent<HTMLTextAreaElement>);
-
 
     }, [selectedCharacter]);
 
@@ -137,7 +145,7 @@ export const Settings = ({
             });
         }
 
-        viewer.loadVrm(`${avatarBaseUrl}${adjustedValue}.vrm`); // 클라우드 플레어 URL 설정
+        viewer.loadVrm(`${avatarBaseUrl}${adjustedValue}.vrm`);
     };
 
     useEffect(() => {
@@ -200,7 +208,13 @@ export const Settings = ({
         { value: "mio", label: "오오카미 미오", image: "/mio.png" },
         { value: "default", label: "----- 홀로라이브 3기생 -----", image: "/default.png" },
         { value: "pekora", label: "우사다 페코라", image: "/pekora.png" },
+        { value: "default", label: "----- 홀로라이브 4기생 -----", image: "/default.png" },
+        { value: "watame", label: "츠노마키 와타메", image: "/watame.png" },
+        { value: "default", label: "----- 홀로라이브 5기생 -----", image: "/default.png" },
+        { value: "lamy", label: "유키하나 라미", image: "/lamy.png" },
+        { value: "nene", label: "모모스즈 네네", image: "/nene.png" },
         { value: "default", label: "----- 비밀결사 holoX -----", image: "/default.png" },
+        { value: "laplus", label: "라프라스 다크니스", image: "/laplus.png" },
         { value: "koyori", label: "하쿠이 코요리", image: "/koyori.png" },
         { value: "koyori_off", label: "하쿠이 코요리(코트 탈의)", image: "/koyori.png" },
         { value: "default", label: "----- Hololive Myth -----", image: "/default.png" },
