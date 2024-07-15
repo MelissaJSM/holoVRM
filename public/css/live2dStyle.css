@@ -1,0 +1,74 @@
+/* live2dStyle.css */
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #fff;
+}
+
+canvas {
+    display: block;
+}
+
+.chat-input {
+    width: 250px;
+    padding: 10px;
+    margin: 0 5px;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.chat-input::placeholder {
+    color: #888;
+}
+
+button {
+    width: 100px;
+    padding: 10px;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.text-area {
+    width: 40%;
+    height: 240px;
+    background-color: rgba(255, 255, 255, 0.75); /* 반투명 배경 */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 150px;
+    transform: translateY(90px);
+}
+
+.header {
+    width: 100%;
+    background-color: #ff66a3;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.content {
+    padding: 20px;
+    text-align: center;
+
+}
+
+/* 추가된 스타일 */
+.title-text {
+    font-size: 26px;
+    color: white;
+}
+
+.description-text {
+    font-size: 26px;
+    color: white;
+    text-shadow: -2px 0px black, 0px 2px black, 2px 0px black, 0px -2px black;
+}

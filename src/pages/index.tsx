@@ -12,7 +12,7 @@ import { Meta } from "@/components/meta";
 import { GitHubLink } from "@/components/githubLink";
 
 import { ElevenLabsParam, DEFAULT_ELEVEN_LABS_PARAM } from "@/features/constants/elevenLabsParam";
-import characterPrompts, { CharacterPrompts } from "@/features/constants/prompts"; // 타입과 기본 내보내기 import
+import characterPrompts, { CharacterPrompts } from "@/features/constants/prompts";
 
 import { M_PLUS_2, Montserrat } from 'next/font/google';
 
@@ -25,7 +25,7 @@ export default function Home() {
     const { viewer } = useContext(ViewerContext);
 
     const [userId, setUserId] = useState("");
-    const [lastCharacter, setLastCharacter] = useState<string | undefined>(undefined); // lastCharacter 추가
+    const [lastCharacter, setLastCharacter] = useState<string | undefined>(undefined);
     const [systemPrompt, setSystemPrompt] = useState(SYSTEM_PROMPT);
     const [openAiKey, setOpenAiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_KEY || "");
     const [elevenLabsKey, setElevenLabsKey] = useState(process.env.NEXT_PUBLIC_ELEVEN_LABS_KEY || "");
@@ -35,9 +35,31 @@ export default function Home() {
     const [chatLog, setChatLog] = useState<Message[]>([]);
     const [assistantMessage, setAssistantMessage] = useState("");
     const [summary, setSummary] = useState("");
-    const [showIntro, setShowIntro] = useState(true); // 인트로 화면 표시 여부
-    const [showSettings, setShowSettings] = useState(false); // 설정 창 표시 여부
-    const [showAssistantMessage, setShowAssistantMessage] = useState(true); // 대화창 표시 여부
+    const [showIntro, setShowIntro] = useState(true);
+    const [showSettings, setShowSettings] = useState(false);
+    const [showAssistantMessage, setShowAssistantMessage] = useState(true);
+
+
+    const easterEgg = `
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡐⠀⠀⠀⠀⠀⠀⠀⠀⠄⠠⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⢈⠐⡡⠀⠀⠀⠀⠀⡀⠌⡀⢃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⢐⠠⠂⣄⠀⠀⠀⠠⠐⡨⢀⠸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡆⠊⠈⠀⢐⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠄⡌⡢⠀⠄⠀⠀⡀⠀⠑⠄⡃⠀⠀⠀⠀⠀⠀⠀⠀⢔⠨⡢⣉⠖⡉⢕⠒⢤⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠄⢀⠈⢂⠅⠀⠠⠁⠠⢀⡒⢀⠀⠀⠀⠀⠀⢀⢐⠕⡡⢎⠔⡕⢨⠊⡔⡩⠢⡑⢕⣀⢀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⡀⠂⠀⡔⢁⠀⠄⠠⡀⡈⠐⠅⠠⡀⠀⠀⣄⠇⡱⡱⡨⡊⢜⢄⢣⡳⢈⣆⢙⡇⠧⣱⠉⢤⡂⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡌⡐⠀⡎⡀⠔⡀⠕⡐⠠⠘⠌⡌⠆⢐⠄⢰⠌⠼⠁⡊⠐⡣⢒⠤⠃⠳⡑⠲⡄⢫⢗⢬⡫⢳⠜⡀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⡸⠰⡄⢪⠰⠁⡢⢕⠈⢥⢅⠑⡜⣀⠚⣀⠗⢊⣎⠊⠑⠲⠄⠘⠢⠓⡷⢤⡉⡎⣘⠜⣅⢺⢜⢄⠗⡄⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠠⡎⢣⠆⡇⠠⢚⢠⠡⠈⡇⢠⠐⠥⢃⣌⡆⠅⡼⣹⡤⠄⢂⠀⡀⠀⢀⠁⠌⠀⠁⢞⢤⢫⡪⡳⡡⢊⢆⢅⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠘⡀⢫⡐⡇⢘⠘⡌⣀⡐⣄⡑⠀⠈⡋⠖⠘⡅⢘⠓⠷⢂⡀⠀⠈⠀⠀⠐⠀⢀⠂⡦⡜⡠⠳⡱⠈⡢⡃⠜⠄⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⡄⢁⠎⢘⠆⠐⡱⠈⢀⠀⠀⠀⠀⠀⠀⠠⢀⠇⢂⠀⠀⡠⣏⡛⢒⠴⢢⢖⢖⠙⠩⡞⡔⡸⡐⢽⢀⠵⡨⠁⠀⠀⠀
+⠀⠀⠀⠀⠀⠠⡑⠄⠰⢂⠊⠊⢠⠊⣄⢀⠌⠈⠈⠂⢊⡠⠐⠁⣇⠠⠀⠈⡲⠪⡠⠛⠸⠃⠁⠀⠈⠀⠓⡵⡈⠺⣄⠣⡊⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⢆⢰⠁⠁⠀⠀⠆⠄⠠⠀⠀⠄⡀⠀⣱⠀⠐⠄⡒⡐⠀⣄⡱⡘⣮⢀⠄⠁⠀⠀⢀⠀⡙⣎⢝⠔⡡⡫⠐⢢⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠌⠀⡖⢉⠀⠀⠀⠈⣕⠈⠒⠐⠄⡠⢑⠜⠀⢄⠠⠀⠉⠂⠄⠉⣉⢖⢣⢦⠄⣃⢊⠀⠀⢜⠌⡮⢳⢌⠢⢣⠀⠉⡆⡀⠀
+⠀⠀⠀⠀⠀⡊⢦⡈⠃⠀⠀⠀⠀⠀⠁⠅⠀⠠⡀⢁⠇⢒⠈⠤⠁⢌⠀⢃⠘⢔⠩⠓⠤⡔⠈⢆⠄⠀⡹⡂⡃⠈⠑⢧⡑⡩⡂⠎⠂⠀
+⠀⣠⣄⣠⠚⡤⢢⡂⣔⢠⠀⠀⠀⠀⢈⠂⣏⠆⠡⢰⠃⡈⢈⠂⠡⠀⠜⣠⢁⢖⢁⠦⢸⠁⣀⡨⠲⠄⢚⢜⠣⣄⡀⠠⠇⠐⠕⠀⠀⠀
+⠀⢸⢆⢺⢔⢬⢢⠋⢄⠇⠁⠀⠀⢀⠄⠁⠀⠀⠀⠐⡇⠀⠂⡌⢐⢁⠜⠀⠂⠂⢣⠐⡀⡱⠅⠤⡠⠀⣋⠈⠃⢶⡹⠈⠀⠀⠁⠀⠀⠀
+    "페코미코는 존재하니 믿을지어다. - 멜리사J"`;
 
     useEffect(() => {
         console.log(easterEgg);
@@ -63,6 +85,7 @@ export default function Home() {
         }
     }, []);
 
+
     const openSettings = useCallback(() => {
         setShowIntro(false);
         setShowSettings(true);
@@ -79,6 +102,7 @@ export default function Home() {
             setChatLog(logs);
         }
     };
+
 
     const loadDefaultParams = () => {
         setSystemPrompt(SYSTEM_PROMPT);
@@ -104,26 +128,6 @@ export default function Home() {
             setElevenLabsParam((prev) => ({ ...prev, voiceId: "" }));
             setSystemPrompt(SYSTEM_PROMPT);
             console.log("Character set to default");
-        } else if (character.includes("miko")) {
-            document.body.style.backgroundImage = `url(/miko_1st.png)`;
-            setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
-            setSystemPrompt(characterPrompts["miko_1st"]);
-            console.log("Character set to:", "miko", "Prompt:", characterPrompts["miko_1st"]);
-        } else if (character.includes("fubuki")) {
-            document.body.style.backgroundImage = `url(/fubuki.png)`;
-            setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
-            setSystemPrompt(characterPrompts["fubuki"]);
-            console.log("Character set to:", "fubuki", "Prompt:", characterPrompts["fubuki"]);
-        } else if (character.includes("aqua")) {
-            document.body.style.backgroundImage = `url(/aqua.png)`;
-            setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
-            setSystemPrompt(characterPrompts["aqua"]);
-            console.log("Character set to:", "aqua", "Prompt:", characterPrompts["aqua"]);
-        } else if (character.includes("koyori")) {
-            document.body.style.backgroundImage = `url(/koyori.png)`;
-            setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
-            setSystemPrompt(characterPrompts["koyori"]);
-            console.log("Character set to:", "koyori", "Prompt:", characterPrompts["koyori"]);
         } else {
             document.body.style.backgroundImage = `url(/${character}.png)`;
             setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
@@ -131,7 +135,6 @@ export default function Home() {
             console.log("Character set to:", character, "Prompt:", characterPrompts[character]);
         }
 
-        // 캐릭터 변경 이벤트 트리거
         if (!character.includes("default")) {
             window.dispatchEvent(new CustomEvent("changeAvatar", { detail: character }));
         }
@@ -161,7 +164,7 @@ export default function Home() {
                 if (onEnd) onEnd();
                 setTimeout(() => {
                     setShowAssistantMessage(false);
-                }, 5000); // 5초 뒤에 대화창 숨기기
+                }, 5000);
             }, audioBuffer);
             console.log('speak character');
         },
@@ -196,7 +199,7 @@ export default function Home() {
         };
         const summaryMessages = [summaryPrompt, ...recentMessages];
         const summaryResponse = await getGpt4Response(summaryMessages, openAiKey);
-        console.log("Summary Response:", summaryResponse); // 요약 내용을 콘솔에 출력
+        console.log("Summary Response:", summaryResponse);
         return summaryResponse;
     };
 
@@ -258,7 +261,6 @@ export default function Home() {
                 const ttsEndpoint = process.env.NEXT_PUBLIC_TTS_SERVER;
                 const response = await fetch(`${ttsEndpoint}/tts`, {
                     //const response = await fetch(`http://localhost:3545/tts`, {
-
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -279,15 +281,15 @@ export default function Home() {
 
                 handleSpeakAi(screenplay, elevenLabsKey, elevenLabsParam, () => {
                     setAssistantMessage(gptResponse);
-                    setShowAssistantMessage(true); // 대화창을 다시 표시
+                    setShowAssistantMessage(true);
                 }, undefined, audioBuffer);
 
-                // 대화 기록 저장 (로그인한 사용자인 경우에만)
-                if (!userId.startsWith("session_")) {
+                if (userId && !userId.startsWith("session_")) {
                     await fetch('/api/chat', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
                         },
                         body: JSON.stringify({
                             userId,
@@ -300,10 +302,36 @@ export default function Home() {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
                         },
                         body: JSON.stringify({
                             userId,
                             role: 'assistant',
+                            message: gptResponse
+                        }),
+                    });
+
+                    await fetch('/api/characterLog', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        },
+                        body: JSON.stringify({
+                            userId,
+                            character,
+                            message: gptResponse
+                        }),
+                    });
+                } else if (userId && userId.startsWith("session_")) {
+                    await fetch('/api/characterLog', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            sessionId: userId,
+                            character,
                             message: gptResponse
                         }),
                     });
@@ -359,7 +387,7 @@ export default function Home() {
                         summary={summary}
                         setSummary={setSummary}
                         showAssistantMessage={showAssistantMessage}
-                        lastCharacter={lastCharacter} // 추가된 부분
+                        lastCharacter={lastCharacter}
                     />
                     <GitHubLink />
                 </>

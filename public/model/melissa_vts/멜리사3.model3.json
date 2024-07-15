@@ -1,0 +1,51 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "멜리사3.moc3",
+		"Textures": [
+			"멜리사3.8192/texture_00.png"
+		],
+		"Physics": "멜리사3.physics3.json",
+		"DisplayInfo": "멜리사3.cdi3.json",
+		"Expressions": [
+			{ "Name": "frown", "File": "expressions/F01.exp3.json" },
+			{ "Name": "smile", "File": "expressions/F01.exp3.json" }
+		],
+		"Motions": {
+			"Idle": [
+				{ "File": "해킹중.motion3.json", "FadeInTime": 1.0, "FadeOutTime": 1.0 }
+			],
+			"Tap": [
+				{ "File": "motion/Lucia_m01.motion3.json", "FadeInTime": 0.5, "FadeOutTime": 0.5 }
+			],
+			"Taps": [
+				{ "File": "motion/Lucia_talking.motion3.json", "FadeInTime": 0.5, "FadeOutTime": 0.5 }
+			]
+		}
+	},
+	"Groups": [
+		{
+			"Target": "Parameter",
+			"Name": "LipSync",
+			"Ids": []
+		},
+		{
+			"Target": "Parameter",
+			"Name": "EyeBlink",
+			"Ids": [
+				"ParamEyeLOpen",
+				"ParamEyeROpen"
+			]
+		},
+		{
+			"Target": "HitArea",
+			"Name": "Head",
+			"Ids": ["Head"]
+		},
+		{
+			"Target": "HitArea",
+			"Name": "Body",
+			"Ids": ["Body"]
+		}
+	]
+}
