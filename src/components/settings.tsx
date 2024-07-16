@@ -151,15 +151,15 @@ export const Settings = ({
     useEffect(() => {
         const body = document.body;
         if (selectedCharacter.includes("miko")) {
-            body.style.backgroundImage = `url(/miko_1st.png)`;
+            body.style.backgroundImage = `url(${avatarBaseUrl}background/miko_1st.png)`;
         } else if (selectedCharacter.includes("fubuki")) {
-            body.style.backgroundImage = `url(/fubuki.png)`;
+            body.style.backgroundImage = `url(${avatarBaseUrl}background/fubuki.png)`;
         } else if (selectedCharacter.includes("aqua")) {
-            body.style.backgroundImage = `url(/aqua.png)`;
+            body.style.backgroundImage = `url(${avatarBaseUrl}background/aqua.png)`;
         } else if (selectedCharacter.includes("koyori")) {
-            body.style.backgroundImage = `url(/koyori.png)`;
+            body.style.backgroundImage = `url(${avatarBaseUrl}background/koyori.png)`;
         } else {
-            body.style.backgroundImage = `url(/${selectedCharacter}.png)`;
+            body.style.backgroundImage = `url(${avatarBaseUrl}background/${selectedCharacter}.png)`;
         }
     }, [selectedCharacter]);
 
@@ -189,39 +189,44 @@ export const Settings = ({
         }
     };
 
+    const avatarBaseUrl = process.env.NEXT_PUBLIC_AVATAR_BASE_URL;
+
     const characterOptions = [
-        { value: "default", label: "캐릭터를 선택해주세요", image: "/default.png" },
-        { value: "default", label: "----- 홀로라이브 0기생 -----", image: "/default.png" },
-        { value: "miko_1st", label: "사쿠라 미코(1세대)", image: "/miko_1st.png" },
-        { value: "miko_miko", label: "사쿠라 미코(무녀)", image: "/miko_miko.png" },
-        { value: "miko_3rd", label: "사쿠라 미코(3세대)", image: "/miko_3rd.png" },
-        { value: "roboco", label: "로보코 씨", image: "/roboco.png" },
-        { value: "default", label: "----- 홀로라이브 2기생 -----", image: "/default.png" },
-        { value: "aqua_made", label: "미나토 아쿠아(메이드)", image: "/aqua_made.png" },
-        { value: "aqua", label: "미나토 아쿠아(사복)", image: "/aqua.png" },
-        { value: "shion", label: "무라사키 시온", image: "/shion.png" },
-        { value: "default", label: "----- 홀로라이브 게이머즈 -----", image: "/default.png" },
-        { value: "fubuki", label: "시라카미 후부키", image: "/fubuki.png" },
-        { value: "fubuki_bunny", label: "시라카미 후부키(버니)", image: "/fubuki_bunny.png" },
-        { value: "korone", label: "이누가미 코로네", image: "/korone.png" },
-        { value: "okayu", label: "네코마타 오카유", image: "/okayu.png" },
-        { value: "mio", label: "오오카미 미오", image: "/mio.png" },
-        { value: "default", label: "----- 홀로라이브 3기생 -----", image: "/default.png" },
-        { value: "pekora", label: "우사다 페코라", image: "/pekora.png" },
-        { value: "default", label: "----- 홀로라이브 4기생 -----", image: "/default.png" },
-        { value: "watame", label: "츠노마키 와타메", image: "/watame.png" },
-        { value: "default", label: "----- 홀로라이브 5기생 -----", image: "/default.png" },
-        { value: "lamy", label: "유키하나 라미", image: "/lamy.png" },
-        { value: "nene", label: "모모스즈 네네", image: "/nene.png" },
-        { value: "default", label: "----- 비밀결사 holoX -----", image: "/default.png" },
-        { value: "laplus", label: "라프라스 다크니스", image: "/laplus.png" },
-        { value: "koyori", label: "하쿠이 코요리", image: "/koyori.png" },
-        { value: "koyori_off", label: "하쿠이 코요리(코트 탈의)", image: "/koyori.png" },
-        { value: "default", label: "----- Hololive Myth -----", image: "/default.png" },
-        { value: "gura", label: "가우르 구라", image: "/gura.png" },
+        { value: "default", label: "캐릭터를 선택해주세요", image: `${avatarBaseUrl}background/default.png` },
+        { value: "default", label: "----- 홀로라이브 0기생 -----", image: `${avatarBaseUrl}background/default.png` },
+        { value: "miko_1st", label: "사쿠라 미코(1세대)", image: `${avatarBaseUrl}background/miko_1st.png` },
+        { value: "miko_miko", label: "사쿠라 미코(무녀)", image: `${avatarBaseUrl}background/miko_miko.png` },
+        { value: "miko_3rd", label: "사쿠라 미코(3세대)", image: `${avatarBaseUrl}background/miko_3rd.png` },
+        { value: "roboco", label: "로보코 씨", image: `${avatarBaseUrl}background/roboco.png` },
+        { value: "default", label: "----- 홀로라이브 2기생 -----", image: `${avatarBaseUrl}background/default.png` },
+        { value: "aqua_made", label: "미나토 아쿠아(메이드)", image: `${avatarBaseUrl}background/aqua_made.png` },
+        { value: "aqua", label: "미나토 아쿠아(사복)", image: `${avatarBaseUrl}background/aqua.png` },
+        { value: "shion", label: "무라사키 시온", image: `${avatarBaseUrl}background/shion.png` },
+        { value: "default", label: "----- 홀로라이브 게이머즈 -----", image: `${avatarBaseUrl}background/default.png` },
+        { value: "fubuki", label: "시라카미 후부키", image: `${avatarBaseUrl}background/fubuki.png` },
+        { value: "fubuki_bunny", label: "시라카미 후부키(버니)", image: `${avatarBaseUrl}background/fubuki_bunny.png` },
+        { value: "korone", label: "이누가미 코로네", image: `${avatarBaseUrl}background/korone.png` },
+        { value: "okayu", label: "네코마타 오카유", image: `${avatarBaseUrl}background/okayu.png` },
+        { value: "mio", label: "오오카미 미오", image: `${avatarBaseUrl}background/mio.png` },
+        { value: "default", label: "----- 홀로라이브 3기생 -----", image: `${avatarBaseUrl}background/default.png` },
+        { value: "pekora", label: "우사다 페코라", image: `${avatarBaseUrl}background/pekora.png` },
+        { value: "default", label: "----- 홀로라이브 4기생 -----", image: `${avatarBaseUrl}background/default.png` },
+        { value: "watame", label: "츠노마키 와타메", image: `${avatarBaseUrl}background/watame.png` },
+        { value: "default", label: "----- 홀로라이브 5기생 -----", image: `${avatarBaseUrl}background/default.png` },
+        { value: "lamy", label: "유키하나 라미", image: `${avatarBaseUrl}background/lamy.png` },
+        { value: "nene", label: "모모스즈 네네", image: `${avatarBaseUrl}background/nene.png` },
+        { value: "default", label: "----- 비밀결사 holoX -----", image: `${avatarBaseUrl}background/default.png` },
+        { value: "laplus", label: "라프라스 다크니스", image: `${avatarBaseUrl}background/laplus.png` },
+        { value: "koyori", label: "하쿠이 코요리", image: `${avatarBaseUrl}background/koyori.png` },
+        { value: "koyori_off", label: "하쿠이 코요리(코트 탈의)", image: `${avatarBaseUrl}background/koyori.png` },
+        { value: "default", label: "----- Hololive Myth -----", image: `${avatarBaseUrl}background/default.png` },
+        { value: "gura", label: "가우르 구라", image: `${avatarBaseUrl}background/gura.png` },
 
         // 추가적인 옵션들...
     ];
+
+
+    const videoUrl = process.env.NEXT_PUBLIC_AVATAR_BASE_URL;
 
     return (
         <div className="absolute z-40 w-full h-full bg-white/80 backdrop-blur">
@@ -231,7 +236,7 @@ export const Settings = ({
             {isVideoPlaying && (
                 <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
                     <video
-                        src="/koyori.mp4"
+                        src={`${videoUrl}koyori.mp4`}
                         className="h-full"
                         autoPlay
                         onEnded={handleVideoEnded}

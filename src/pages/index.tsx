@@ -129,7 +129,8 @@ export default function Home() {
             setSystemPrompt(SYSTEM_PROMPT);
             console.log("Character set to default");
         } else {
-            document.body.style.backgroundImage = `url(/${character}.png)`;
+            const backgroundImageUrl = process.env.NEXT_PUBLIC_AVATAR_BASE_URL;
+            document.body.style.backgroundImage = `url(${backgroundImageUrl}background/${character}.png)`; // 여기 안쓰는거아냐?
             setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
             setSystemPrompt(characterPrompts[character]);
             console.log("Character set to:", character, "Prompt:", characterPrompts[character]);

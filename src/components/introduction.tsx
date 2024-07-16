@@ -166,9 +166,16 @@ export const Introduction = ({openAiKey, onChangeAiKey, onSubmitUserId, onResetC
         }
     };
 
+    const backgroundImageUrl = process.env.NEXT_PUBLIC_AVATAR_BASE_URL;
+
+    const divStyle = {
+        backgroundImage: `url(${backgroundImageUrl}background/default.png)`,
+        backgroundSize: 'cover'
+    };
+
     return opened ? (
         <div className="absolute z-40 w-full h-full px-24 py-40 font-M_PLUS_2"
-             style={{backgroundImage: 'url(/background.png)', backgroundSize: 'cover'}}>
+             style={divStyle}>
             <div className="mx-auto my-auto max-w-3xl max-h-full p-24 overflow-auto bg-white/90 rounded-16">
                 <div className="my-24">
                     <div className="my-8 font-bold typography-20 text-secondary">
