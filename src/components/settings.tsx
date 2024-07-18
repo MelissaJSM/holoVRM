@@ -198,6 +198,8 @@ export const Settings = ({
         { value: "miko_miko", label: "사쿠라 미코(무녀)", image: `${avatarBaseUrl}background/miko_miko.png` },
         { value: "miko_3rd", label: "사쿠라 미코(3세대)", image: `${avatarBaseUrl}background/miko_3rd.png` },
         { value: "roboco", label: "로보코 씨", image: `${avatarBaseUrl}background/roboco.png` },
+        { value: "default", label: "----- 홀로라이브 1기생 -----", image: `${avatarBaseUrl}background/default.png` },
+        { value: "haato", label: "아카이 하아토", image: `${avatarBaseUrl}background/haato.png` },
         { value: "default", label: "----- 홀로라이브 2기생 -----", image: `${avatarBaseUrl}background/default.png` },
         { value: "aqua_made", label: "미나토 아쿠아(메이드)", image: `${avatarBaseUrl}background/aqua_made.png` },
         { value: "aqua", label: "미나토 아쿠아(사복)", image: `${avatarBaseUrl}background/aqua.png` },
@@ -210,6 +212,7 @@ export const Settings = ({
         { value: "mio", label: "오오카미 미오", image: `${avatarBaseUrl}background/mio.png` },
         { value: "default", label: "----- 홀로라이브 3기생 -----", image: `${avatarBaseUrl}background/default.png` },
         { value: "pekora", label: "우사다 페코라", image: `${avatarBaseUrl}background/pekora.png` },
+        { value: "marine", label: "호쇼 마린", image: `${avatarBaseUrl}background/marine.png` },
         { value: "default", label: "----- 홀로라이브 4기생 -----", image: `${avatarBaseUrl}background/default.png` },
         { value: "watame", label: "츠노마키 와타메", image: `${avatarBaseUrl}background/watame.png` },
         { value: "default", label: "----- 홀로라이브 5기생 -----", image: `${avatarBaseUrl}background/default.png` },
@@ -219,6 +222,7 @@ export const Settings = ({
         { value: "laplus", label: "라프라스 다크니스", image: `${avatarBaseUrl}background/laplus.png` },
         { value: "koyori", label: "하쿠이 코요리", image: `${avatarBaseUrl}background/koyori.png` },
         { value: "koyori_off", label: "하쿠이 코요리(코트 탈의)", image: `${avatarBaseUrl}background/koyori.png` },
+        { value: "chloe", label: "사카마타 클로에", image: `${avatarBaseUrl}background/chloe.png` },
         { value: "default", label: "----- Hololive Myth -----", image: `${avatarBaseUrl}background/default.png` },
         { value: "gura", label: "가우르 구라", image: `${avatarBaseUrl}background/gura.png` },
 
@@ -283,7 +287,30 @@ export const Settings = ({
                     <div className="my-40 bg-gray-100 p-8 rounded-md">
                         <div className="my-8">
                             <div className="my-16 typography-20 font-bold">캐릭터 컨셉 설정(수동 변경해도 적용 되지 않을 수 있습니다.)</div>
-                            <TextButton onClick={handleResetSystemPrompt}>캐릭터 컨셉을 리셋합니다.(누르지 마세요)</TextButton>
+                            <button
+                                onClick={handleResetSystemPrompt}
+                                style={{
+                                    backgroundColor: '#f56565', // 기본 배경색 (레드 계열)
+                                    color: 'white',
+                                    padding: '10px 20px', // 버튼 패딩 조정
+                                    borderRadius: '10px', // 둥근 모서리
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    transition: 'background-color 0.3s ease, transform 0.2s ease'
+                                }}
+                                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#e53e3e'} // hover 색상
+                                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f56565'} // 기본 배경색
+                                onMouseDown={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#c53030'; // active 색상
+                                    e.currentTarget.style.transform = 'scale(0.95)';
+                                }}
+                                onMouseUp={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#e53e3e'; // hover 색상
+                                    e.currentTarget.style.transform = 'scale(1)';
+                                }}
+                            >
+                                캐릭터 컨셉을 리셋합니다.(누르지 마세요)
+                            </button>
                         </div>
                         <textarea
                             value={systemPrompt}
@@ -295,11 +322,36 @@ export const Settings = ({
                         <div className="my-40 bg-gray-100 p-8 rounded-md">
                             <div className="my-8 grid-cols-2">
                                 <div className="my-16 typography-20 font-bold">홀로라이브 멤버와의 채팅내역</div>
-                                <TextButton onClick={handleResetChatLog}>채팅 내역 초기화</TextButton>
+                                <button
+                                    onClick={handleResetChatLog}
+                                    style={{
+                                        backgroundColor: '#f56565', // 기본 배경색 (레드 계열)
+                                        color: 'white',
+                                        padding: '10px 20px', // 버튼 패딩 조정
+                                        borderRadius: '10px', // 둥근 모서리
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        transition: 'background-color 0.3s ease, transform 0.2s ease'
+                                    }}
+                                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#e53e3e'} // hover 색상
+                                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f56565'} // 기본 배경색
+                                    onMouseDown={(e) => {
+                                        e.currentTarget.style.backgroundColor = '#c53030'; // active 색상
+                                        e.currentTarget.style.transform = 'scale(0.95)';
+                                    }}
+                                    onMouseUp={(e) => {
+                                        e.currentTarget.style.backgroundColor = '#e53e3e'; // hover 색상
+                                        e.currentTarget.style.transform = 'scale(1)';
+                                    }}
+                                >
+                                    채팅 내역 초기화
+                                </button>
+
                             </div>
                             <div className="my-8">
                                 {chatLog.map((value, index) => (
-                                    <div key={index} className="my-8 grid grid-flow-col grid-cols-[min-content_1fr] gap-x-fixed">
+                                    <div key={index}
+                                         className="my-8 grid grid-flow-col grid-cols-[min-content_1fr] gap-x-fixed">
                                         <div className="w-[64px] py-8">
                                             {value.role === "assistant" ? "Character" : "You"}
                                         </div>

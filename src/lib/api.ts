@@ -45,7 +45,20 @@ export const fetchWithToken = async (url: string, options: RequestInit = {}) => 
         }
     }
 
-    return response.json();
+    // 응답이 JSON인지 확인 후 처리
+    const contentType = response.headers.get('content-type');
+    let responseData;
+    if (contentType && contentType.indexOf('application/json') !== -1) {
+        responseData = await response.json();
+    } else {
+        responseData = await response.text();
+    }
+
+    if (!response.ok) {
+        throw new Error(responseData);
+    }
+
+    return responseData;
 };
 
 export const fetchMemos = async () => {

@@ -25,6 +25,10 @@ ChatVRM : <a href="https://github.com/zoan37/ChatVRM">https://github.com/zoan37/
 
 <h2>changelog</h2>
 
+0.9.8 호쇼 마린 추가, 로그인 보안 기능 추가<br>
+0.9.7 관리자 권한 향상<br>
+0.9.6 UI 개선<br>
+0.9.5 아카이 하아토(하쨔마), 사카마타 클로에 추가<br>
 0.9.4 배경화면 로딩 속도 향상<br>
 0.9.3 로그인 엔터로 가능하도록 수정<br>
 0.9.2 관리자 로그인 페이지에 루시아 관리 모드 추가<br>

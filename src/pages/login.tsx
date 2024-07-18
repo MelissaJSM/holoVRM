@@ -103,9 +103,30 @@ const Login = () => {
                             />
                         </div>
                         {error && <p className="text-red-500 mb-2">{error}</p>}
-                        <button type="submit" className="bg-green-500 text-white p-2 rounded">
+                        <button
+                            type="submit"
+                            className="bg-green-500 text-white p-2 rounded"
+                            style={{
+                                backgroundColor: '#48BB78', // 기본 배경색
+                                color: 'white',
+                                padding: '12px 16px', // 세로 길이를 더 길게 조정
+                                borderRadius: '20px', // 더 둥글게 조정
+                                transition: 'background-color 0.3s ease, transform 0.2s ease'
+                            }}
+                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#38a169'} // hover 색상
+                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#48BB78'} // 기본 배경색
+                            onMouseDown={(e) => {
+                                e.currentTarget.style.backgroundColor = '#2f855a'; // active 색상
+                                e.currentTarget.style.transform = 'scale(0.95)';
+                            }}
+                            onMouseUp={(e) => {
+                                e.currentTarget.style.backgroundColor = '#38a169'; // hover 색상
+                                e.currentTarget.style.transform = 'scale(1)';
+                            }}
+                        >
                             전송
                         </button>
+
                     </form>
                 </div>
             </div>

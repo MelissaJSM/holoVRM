@@ -60,18 +60,35 @@ const Signup = () => {
         <div className="absolute z-40 w-full h-full px-24 py-40 bg-black/30 font-M_PLUS_2">
             <div className="mx-auto my-auto max-w-3xl max-h-full p-24 overflow-auto bg-white rounded-16">
                 <div className="my-24">
-                    <div className="my-8 font-bold typography-20 text-secondary">
+                    <div
+                        className="my-8 font-bold typography-20 text-secondary"
+                        style={{
+                            color: '#4299e1', // 기본 텍스트 색상 (푸른 계열)
+                            transition: 'color 0.3s ease, transform 0.2s ease'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.color = '#3182ce'} // hover 색상
+                        onMouseOut={(e) => e.currentTarget.style.color = '#4299e1'} // 기본 텍스트 색상
+                        onMouseDown={(e) => {
+                            e.currentTarget.style.color = '#2b6cb0'; // active 색상
+                            e.currentTarget.style.transform = 'scale(0.95)';
+                        }}
+                        onMouseUp={(e) => {
+                            e.currentTarget.style.color = '#3182ce'; // hover 색상
+                            e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                    >
                         회원가입
                     </div>
-                    <br /><br />
+
+                    <br/><br/>
                     <div className="my-8 text-black font-bold">
-                        <p>회원가입 시 안내 조항:</p><br />
+                        <p>회원가입 시 안내 조항:</p><br/>
                         <ul className="list-disc list-inside">
                             <li>비밀번호 보호: 회원님의 계정 비밀번호는 암호화되어 안전하게 보호됩니다.</li>
                             <li>채팅 로그 저장: 계정으로 로그인 시 채팅 로그가 저장됩니다.</li>
                             <li>채팅 로그 불러오기: 로그인 시 선택한 홀로멤과의 채팅 로그를 불러올 수 있습니다.</li>
                             <li>계정 삭제: 계정 삭제 시 해당 계정의 모든 데이터는 데이터베이스에서 완전히 삭제되며, 복구할 수 없습니다.</li>
-                            <br />
+                            <br/>
                         </ul>
                     </div>
 

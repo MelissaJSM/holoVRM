@@ -142,13 +142,49 @@ export const Menu = ({
                         label="Settings"
                         isProcessing={false}
                         onClick={() => setShowSettings(true)}
-                    ></IconButton>
+                        style={{
+                            backgroundColor: '#856292',
+                            color: 'white',
+                            padding: '10px 20px',
+                            borderRadius: '10px',
+                            border: 'none',
+                            transition: 'background-color 0.3s ease, transform 0.2s ease'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#6b4f7d'}
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#856292'}
+                        onMouseDown={(e) => {
+                            e.currentTarget.style.backgroundColor = '#593c66';
+                            e.currentTarget.style.transform = 'scale(0.95)';
+                        }}
+                        onMouseUp={(e) => {
+                            e.currentTarget.style.backgroundColor = '#6b4f7d';
+                            e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                    />
                     {showChatLog ? (
                         <IconButton
                             iconName="24/CommentOutline"
                             label="Conversation Log"
                             isProcessing={false}
                             onClick={() => setShowChatLog(false)}
+                            style={{
+                                backgroundColor: '#856292',
+                                color: 'white',
+                                padding: '10px 20px',
+                                borderRadius: '10px',
+                                border: 'none',
+                                transition: 'background-color 0.3s ease, transform 0.2s ease'
+                            }}
+                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#6b4f7d'}
+                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#856292'}
+                            onMouseDown={(e) => {
+                                e.currentTarget.style.backgroundColor = '#593c66';
+                                e.currentTarget.style.transform = 'scale(0.95)';
+                            }}
+                            onMouseUp={(e) => {
+                                e.currentTarget.style.backgroundColor = '#6b4f7d';
+                                e.currentTarget.style.transform = 'scale(1)';
+                            }}
                         />
                     ) : (
                         <IconButton
@@ -157,11 +193,31 @@ export const Menu = ({
                             isProcessing={false}
                             disabled={chatLog.length <= 0}
                             onClick={() => setShowChatLog(true)}
+                            style={{
+                                backgroundColor: '#856292',
+                                color: 'white',
+                                padding: '10px 20px',
+                                borderRadius: '10px',
+                                border: 'none',
+                                opacity: chatLog.length <= 0 ? 0.5 : 1, // 반투명 처리
+                                transition: 'background-color 0.3s ease, transform 0.2s ease, opacity 0.3s ease'
+                            }}
+                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#6b4f7d'}
+                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#856292'}
+                            onMouseDown={(e) => {
+                                e.currentTarget.style.backgroundColor = '#593c66';
+                                e.currentTarget.style.transform = 'scale(0.95)';
+                            }}
+                            onMouseUp={(e) => {
+                                e.currentTarget.style.backgroundColor = '#6b4f7d';
+                                e.currentTarget.style.transform = 'scale(1)';
+                            }}
                         />
                     )}
                 </div>
             </div>
-            {showChatLog && <ChatLog messages={chatLog} />}
+
+            {showChatLog && <ChatLog messages={chatLog}/>}
             {showSettings && (
                 <Settings
                     openAiKey={openAiKey}
@@ -187,7 +243,7 @@ export const Menu = ({
                 />
             )}
             {!showChatLog && showAssistantMessage && assistantMessage && (
-                <AssistantText message={assistantMessage} />
+                <AssistantText message={assistantMessage}/>
             )}
             <input
                 type="file"

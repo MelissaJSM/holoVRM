@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {useRouter} from 'next/router';
-import {Link} from './link';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { Link } from './link';
 
 type Props = {
     openAiKey: string;
@@ -12,18 +12,65 @@ type Props = {
     onOpenSettings: () => void;
 };
 
-export const Introduction = ({openAiKey, onChangeAiKey, onSubmitUserId, onResetChatLog, onOpenSettings}: Props) => {
+export const Introduction: React.FC<Props> = ({
+                                                  openAiKey,
+                                                  onChangeAiKey,
+                                                  onSubmitUserId,
+                                                  onResetChatLog,
+                                                  onOpenSettings,
+                                              }) => {
     const [opened, setOpened] = useState(true);
     const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [turnstileToken, setTurnstileToken] = useState<string>('');
     const router = useRouter();
 
+    useEffect(() => {
+        const logIp = async () => {
+            try {
+                await fetch('/api/logIp', {
+                    method: 'POST',
+                });
+            } catch (error) {
+                console.error('Failed to log IP address:', error);
+            }
+        };
+        logIp();
+    }, []);
+
+    useEffect(() => {
+        const script = document.createElement('script');
+        script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+        script.async = true;
+        script.onload = () => {
+            if (window.turnstile) {
+                window.turnstile.render('#turnstile-widget', {
+                    sitekey: process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY!,
+                    callback: (token: string) => {
+                        setTurnstileToken(token);
+                    },
+                });
+            }
+        };
+        document.body.appendChild(script);
+
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, []);
+
     const handleStart = async () => {
-        if (loading) return;  // 로딩 중이면 중복 실행 방지
+        if (loading) return;
         setLoading(true);
         console.log('handleStart called');
+
+        if (!turnstileToken) {
+            setError('Turnstile 체크를 완료해주세요.');
+            setLoading(false);
+            return;
+        }
 
         if (userId && password) {
             try {
@@ -32,7 +79,7 @@ export const Introduction = ({openAiKey, onChangeAiKey, onSubmitUserId, onResetC
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({userId, password, isIntroduction: true})
+                    body: JSON.stringify({ userId, password, isIntroduction: true, turnstileToken }),
                 });
                 const data = await response.json();
                 if (data.success) {
@@ -44,14 +91,13 @@ export const Introduction = ({openAiKey, onChangeAiKey, onSubmitUserId, onResetC
                         onSubmitUserId(userId, false, data.lastCharacter);
                         setOpened(false);
 
-                        // 회원 로그인 시도 기록 추가
                         console.log('Recording login attempt');
                         await fetch('/api/recordLoginAttempt', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
-                            body: JSON.stringify({type: 'user', userId: userId})
+                            body: JSON.stringify({ type: 'user', userId: userId }),
                         }).then(() => {
                             console.log('Login attempt recorded');
                             setLoading(false);
@@ -93,8 +139,8 @@ export const Introduction = ({openAiKey, onChangeAiKey, onSubmitUserId, onResetC
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({type: 'session', userId: sessionId})
-        }).then(response => response.json()).then(data => {
+            body: JSON.stringify({ type: 'session', userId: sessionId }),
+        }).then((response) => response.json()).then((data) => {
             if (!data.success) {
                 console.error('Error recording session login attempt:', data.message);
             } else {
@@ -125,7 +171,7 @@ export const Introduction = ({openAiKey, onChangeAiKey, onSubmitUserId, onResetC
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({userId, password})
+                body: JSON.stringify({ userId, password }),
             });
             const data = await response.json();
             if (!data.success) {
@@ -146,7 +192,7 @@ export const Introduction = ({openAiKey, onChangeAiKey, onSubmitUserId, onResetC
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({userId, password})
+                body: JSON.stringify({ userId, password }),
             });
             const data = await response.json();
             if (data.success) {
@@ -170,16 +216,15 @@ export const Introduction = ({openAiKey, onChangeAiKey, onSubmitUserId, onResetC
 
     const divStyle = {
         backgroundImage: `url(${backgroundImageUrl}background/default.png)`,
-        backgroundSize: 'cover'
+        backgroundSize: 'cover',
     };
 
     return opened ? (
-        <div className="absolute z-40 w-full h-full px-24 py-40 font-M_PLUS_2"
-             style={divStyle}>
+        <div className="absolute z-40 w-full h-full px-24 py-40 font-M_PLUS_2" style={divStyle}>
             <div className="mx-auto my-auto max-w-3xl max-h-full p-24 overflow-auto bg-white/90 rounded-16">
                 <div className="my-24">
                     <div className="my-8 font-bold typography-20 text-secondary">
-                        HoloVRM(0.9.4 beta)
+                        HoloVRM(0.9.8 beta)
                     </div>
                     <div>
                         마이크, 문자 입력, 음성 합성 등을 이용해 웹 브라우저만으로 AI 홀로라이브 멤버와 대화를 즐길 수 있는 웹 브라우저 기반 대화 시스템입니다.
@@ -188,13 +233,11 @@ export const Introduction = ({openAiKey, onChangeAiKey, onSubmitUserId, onResetC
                 <div className="my-24">
                     <div className="my-8 font-bold typography-20 text-secondary">기술</div>
                     <div>
-                        <Link url={"https://github.com/pixiv/three-vrm"} label={"@pixiv/three-vrm"}/>&nbsp; :
-                        @pixiv/3-vrm은 3D 모델을 표시하고 조작하는 데 사용되었습니다. <br/> tts 모델은 rvc 모델을 바탕으로 8천개의 음성을 해당 멤버의 목소리로 딥러닝 시킨
-                        후 vits 를 사용하여 tts 작업을 하였습니다.
+                        <Link url={"https://github.com/pixiv/three-vrm"} label={"@pixiv/three-vrm"}/> &nbsp; :
+                        @pixiv/3-vrm은 3D 모델을 표시하고 조작하는 데 사용되었습니다. <br/> tts 모델은 rvc 모델을 바탕으로 8천개의 음성을 해당 멤버의 목소리로 딥러닝 시킨 후 vits 를 사용하여 tts 작업을 하였습니다.
                         <br/> 또한, 음성인식은 인터넷 브라우저의 음성인식을 사용하였으므로 브라우저마다 성능이 조금 다를 수 있습니다.
                         <br/>
-                        <Link url={"https://openai.com/index/openai-api/"} label={"Open ai API"}/>&nbsp; : 인격은 chatGPT4o
-                        를 이용하여 부여하였으며 세세한 대화를 위하여 장문을 사용하였습니다.
+                        <Link url={"https://openai.com/index/openai-api/"} label={"Open ai API"}/> &nbsp; : 인격은 chatGPT4o 를 이용하여 부여하였으며 세세한 대화를 위하여 장문을 사용하였습니다.
                         <br/>
                     </div>
                     <div className="my-16">
@@ -204,8 +247,7 @@ export const Introduction = ({openAiKey, onChangeAiKey, onSubmitUserId, onResetC
                         <Link url={"https://github.com/zoan37/ChatVRM"} label={"https://github.com/zoan37/ChatVRM"}/>
                         <br/>
                         HoloVrm : &nbsp;
-                        <Link url={"https://github.com/MelissaJSM/holoVRM"}
-                              label={"https://github.com/MelissaJSM/holoVRM"}/>
+                        <Link url={"https://github.com/MelissaJSM/holoVRM"} label={"https://github.com/MelissaJSM/holoVRM"}/>
                     </div>
                 </div>
 
@@ -219,39 +261,23 @@ export const Introduction = ({openAiKey, onChangeAiKey, onSubmitUserId, onResetC
                 </div>
                 <div className="my-24">
                     <div className="my-8 font-bold typography-20 text-secondary">OpenAI API</div>
-                    {/*<input*/}
-                    {/*    type="text"*/}
-                    {/*    placeholder="Open AI Key"*/}
-                    {/*    value={"구현중"}*/}
-                    {/*    className="my-4 px-16 py-8 w-full h-40 bg-surface3 hover:bg-surface3-hover rounded-4 text-ellipsis"*/}
-                    {/*    onKeyPress={handleKeyPress}*/}
-                    {/*></input>*/}
                     <div>
                         개발자가 비용의 한계를 느낄 때 여기 기능이 활성화 됩니다.
-                        {/*<br/>*/}
-                        {/*Open AI 의 API Key 를 입력해주세요.&nbsp;*/}
-                        {/*<Link url="https://platform.openai.com/" label="OpenAI API website"/>.*/}
                     </div>
-                    {/*<div className="my-16">*/}
-                    {/*    입력한 API 키는 브라우저에서 바로 사용하여 OpenAI API를 호출하므로 서버에 저장되지 않습니다.*/}
-                    {/*</div>*/}
-
-                    <div className="my-24">
-                        <div className="my-8 font-bold typography-20 text-secondary">로그인 / 회원가입 / 회원탈퇴</div>
-
-                        <div className="my-16">
-                            ID와 비밀번호를 입력 후 "이해하였으며 시작합니다." 버튼을 누르면 로그인이 됩니다.
-                        </div>
-                        <div className="my-16">
-                            회원가입 버튼을 누르면 가입 페이지로 이동합니다.
-                        </div>
-                        <div className="my-16">
-                            ID와 비밀번호를 입력 후 "ID 삭제하기" 버튼을 누르면 회원 탈퇴가 진행됩니다.
-                        </div>
-                    </div>
-
-
                 </div>
+                <div className="my-24">
+                    <div className="my-8 font-bold typography-20 text-secondary">로그인 / 회원가입 / 회원탈퇴</div>
+                    <div className="my-16">
+                        ID와 비밀번호를 입력 후 "이해하였으며 시작합니다." 버튼을 누르면 로그인이 됩니다.
+                    </div>
+                    <div className="my-16">
+                        회원가입 버튼을 누르면 가입 페이지로 이동합니다.
+                    </div>
+                    <div className="my-16">
+                        ID와 비밀번호를 입력 후 "ID 삭제하기" 버튼을 누르면 회원 탈퇴가 진행됩니다.
+                    </div>
+                </div>
+
                 <div className="my-24">
                     <div className="my-8 font-bold typography-20 text-secondary">사용자 ID</div>
                     <input
@@ -272,26 +298,79 @@ export const Introduction = ({openAiKey, onChangeAiKey, onSubmitUserId, onResetC
                         onKeyPress={handleKeyPress}
                     />
                 </div>
+                <div id="turnstile-widget" className="my-4"></div>
                 {error && <div className="my-4 text-red-600">{error}</div>}
                 <div className="my-24">
-                    <button onClick={handleStart}
-                            className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white px-24 py-8 rounded-oval"
-                            disabled={loading}>
+                    <button
+                        onClick={handleStart}
+                        className="font-bold text-white px-24 py-8 rounded-oval"
+                        style={{
+                            backgroundColor: '#4299e1',  // 기본 배경색 푸른 계열
+                            color: 'white',
+                            transition: 'background-color 0.3s ease, transform 0.2s ease'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#3182ce'}  // hover 색상
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4299e1'}  // 기본 배경색
+                        onMouseDown={(e) => {
+                            e.currentTarget.style.backgroundColor = '#2b6cb0';  // active 색상
+                            e.currentTarget.style.transform = 'scale(0.95)';
+                        }}
+                        onMouseUp={(e) => {
+                            e.currentTarget.style.backgroundColor = '#3182ce';  // hover 색상
+                            e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                        disabled={loading}
+                    >
                         이해하였으며 시작합니다.
                     </button>
                 </div>
                 <div className="my-24">
-                    <button onClick={handleSignup} className="font-bold text-white px-24 py-8 rounded-oval"
-                            style={{backgroundColor: '#48BB78', color: 'white'}}>
+                    <button
+                        onClick={handleSignup}
+                        className="font-bold text-white px-24 py-8 rounded-oval"
+                        style={{
+                            backgroundColor: '#48BB78',
+                            color: 'white',
+                            transition: 'background-color 0.3s ease, transform 0.2s ease'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#38a169'}
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#48BB78'}
+                        onMouseDown={(e) => {
+                            e.currentTarget.style.backgroundColor = '#2f855a';
+                            e.currentTarget.style.transform = 'scale(0.95)';
+                        }}
+                        onMouseUp={(e) => {
+                            e.currentTarget.style.backgroundColor = '#38a169';
+                            e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                    >
                         회원가입
                     </button>
                 </div>
                 <div className="my-24">
-                    <button onClick={handleDeleteUser} className="font-bold text-white px-24 py-8 rounded-oval"
-                            style={{backgroundColor: '#f56565', color: 'white'}}>
+                    <button
+                        onClick={handleDeleteUser}
+                        className="font-bold text-white px-24 py-8 rounded-oval"
+                        style={{
+                            backgroundColor: '#f56565',
+                            color: 'white',
+                            transition: 'background-color 0.3s ease, transform 0.2s ease'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#e53e3e'}
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f56565'}
+                        onMouseDown={(e) => {
+                            e.currentTarget.style.backgroundColor = '#c53030';
+                            e.currentTarget.style.transform = 'scale(0.95)';
+                        }}
+                        onMouseUp={(e) => {
+                            e.currentTarget.style.backgroundColor = '#e53e3e';
+                            e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                    >
                         ID 삭제하기
                     </button>
                 </div>
+
             </div>
         </div>
     ) : null;
