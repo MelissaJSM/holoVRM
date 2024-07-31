@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import {fontSize} from "@mui/system";
 
 const Signup = () => {
     const [userId, setUserId] = useState('');
@@ -56,13 +57,25 @@ const Signup = () => {
         }
     };
 
+    const handleBack = () => {
+        router.push('/');
+    };
+
+    const backgroundImageUrl = process.env.NEXT_PUBLIC_AVATAR_BASE_URL;
+
+    const divStyle = {
+        backgroundImage: `url(${backgroundImageUrl}background/default.png)`,
+        backgroundSize: 'cover',
+    };
+
     return (
-        <div className="absolute z-40 w-full h-full px-24 py-40 bg-black/30 font-M_PLUS_2">
-            <div className="mx-auto my-auto max-w-3xl max-h-full p-24 overflow-auto bg-white rounded-16">
+        <div className="absolute z-40 w-full h-full flex items-center justify-center px-24 py-40 bg-black/30 font-M_PLUS_2" style={divStyle}>
+            <div className="max-w-4xl max-h-full p-24 overflow-auto bg-white/90 rounded-16">
                 <div className="my-24">
                     <div
                         className="my-8 font-bold typography-20 text-secondary"
                         style={{
+                            fontSize:"32px",
                             color: '#4299e1', // 기본 텍스트 색상 (푸른 계열)
                             transition: 'color 0.3s ease, transform 0.2s ease'
                         }}
@@ -122,10 +135,48 @@ const Signup = () => {
                         <br />
                         <button
                             onClick={handleSignup}
-                            className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white px-24 py-8 rounded-oval"
+                            className="font-bold text-white px-24 py-8 rounded-oval"
+                            style={{
+                                backgroundColor: '#4299e1',  // 기본 배경색 푸른 계열
+                                color: 'white',
+                                transition: 'background-color 0.3s ease, transform 0.2s ease'
+                            }}
+                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#3182ce'}  // hover 색상
+                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4299e1'}  // 기본 배경색
+                            onMouseDown={(e) => {
+                                e.currentTarget.style.backgroundColor = '#2b6cb0';  // active 색상
+                                e.currentTarget.style.transform = 'scale(0.95)';
+                            }}
+                            onMouseUp={(e) => {
+                                e.currentTarget.style.backgroundColor = '#3182ce';  // hover 색상
+                                e.currentTarget.style.transform = 'scale(1)';
+                            }}
                             disabled={!turnstileToken}
                         >
                             회원가입
+                        </button>
+                        <br />
+                        <br />
+                        <button
+                            onClick={handleBack}
+                            className="font-bold text-white px-24 py-8 rounded-oval"
+                            style={{
+                                backgroundColor: '#48BB78',  // 기본 배경색 초록 계열
+                                color: 'white',
+                                transition: 'background-color 0.3s ease, transform 0.2s ease'
+                            }}
+                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#38a169'}  // hover 색상
+                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#48BB78'}  // 기본 배경색
+                            onMouseDown={(e) => {
+                                e.currentTarget.style.backgroundColor = '#2f855a';  // active 색상
+                                e.currentTarget.style.transform = 'scale(0.95)';
+                            }}
+                            onMouseUp={(e) => {
+                                e.currentTarget.style.backgroundColor = '#38a169';  // hover 색상
+                                e.currentTarget.style.transform = 'scale(1)';
+                            }}
+                        >
+                            돌아가기
                         </button>
                     </div>
                 </div>

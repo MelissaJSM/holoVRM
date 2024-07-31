@@ -39,12 +39,11 @@ export default function Home() {
     const [showSettings, setShowSettings] = useState(false);
     const [showAssistantMessage, setShowAssistantMessage] = useState(true);
 
-
     const easterEgg = `
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡐⠀⠀⠀⠀⠀⠀⠀⠀⠄⠠⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⢈⠐⡡⠀⠀⠀⠀⠀⡀⠌⡀⢃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⢐⠠⠂⣄⠀⠀⠀⠠⠐⡨⢀⠸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡆⠊⠈⠀⢐⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⢐⠠⠂⣄⠀⠀⠀⠠⠐⡨⢀⠸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡆⠊⠈⠀⢐⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠄⡌⡢⠀⠄⠀⠀⡀⠀⠑⠄⡃⠀⠀⠀⠀⠀⠀⠀⠀⢔⠨⡢⣉⠖⡉⢕⠒⢤⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠄⢀⠈⢂⠅⠀⠠⠁⠠⢀⡒⢀⠀⠀⠀⠀⠀⢀⢐⠕⡡⢎⠔⡕⢨⠊⡔⡩⠢⡑⢕⣀⢀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⡀⠂⠀⡔⢁⠀⠄⠠⡀⡈⠐⠅⠠⡀⠀⠀⣄⠇⡱⡱⡨⡊⢜⢄⢣⡳⢈⣆⢙⡇⠧⣱⠉⢤⡂⠀⠀⠀⠀
@@ -172,7 +171,8 @@ export default function Home() {
         [viewer]
     );
 
-    const getGpt4Response = async (messages: Message[], openAiKey: string) => {
+    const getGpt4Response = async (messages: Message[], openAiKey: string, isSession: boolean) => {
+        const model = isSession ? "gpt-4o-mini" : "gpt-4o";
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -180,7 +180,7 @@ export default function Home() {
                 "Authorization": `Bearer ${openAiKey}`
             },
             body: JSON.stringify({
-                model: "gpt-4o",
+                model,
                 messages: messages,
                 max_tokens: 2000
             })
@@ -193,13 +193,13 @@ export default function Home() {
         throw new Error("Invalid response from OpenAI API");
     };
 
-    const summarizeChat = async (recentMessages: Message[], openAiKey: string) => {
+    const summarizeChat = async (recentMessages: Message[], openAiKey: string, isSession: boolean) => {
         const summaryPrompt: Message = {
             role: "system",
             content: "다음 대화를 요약해 주세요."
         };
         const summaryMessages = [summaryPrompt, ...recentMessages];
-        const summaryResponse = await getGpt4Response(summaryMessages, openAiKey);
+        const summaryResponse = await getGpt4Response(summaryMessages, openAiKey, isSession);
         console.log("Summary Response:", summaryResponse);
         return summaryResponse;
     };
@@ -232,14 +232,14 @@ export default function Home() {
             setChatLog(prev => [...prev, newMessage]);
 
             try {
-                const gptResponse = await getGpt4Response(messageLog, openAiKey);
+                const gptResponse = await getGpt4Response(messageLog, openAiKey, userId.startsWith("session_"));
 
                 const newAssistantMessage: Message = { role: "assistant", content: gptResponse };
                 const updatedMessageLog = [...chatLog, newAssistantMessage];
                 setChatLog(prev => [...prev, newAssistantMessage]);
 
                 const recentMessages = [newMessage, newAssistantMessage];
-                const chatSummary = await summarizeChat(recentMessages, openAiKey);
+                const chatSummary = await summarizeChat(recentMessages, openAiKey, userId.startsWith("session_"));
                 setSummary(prevSummary => `${prevSummary} ${chatSummary}`);
 
                 const screenplays = textsToScreenplay([gptResponse], koeiroParam);
@@ -255,7 +255,10 @@ export default function Home() {
                     character = "aqua";
                 } else if ((elevenLabsParam.voiceId).includes("koyori")) {
                     character = "koyori";
-                } else {
+                } else if ((elevenLabsParam.voiceId).includes("pekomama")) {
+                    character = "pekomama";
+                }
+                else {
                     character = elevenLabsParam.voiceId || "miko";
                 }
 

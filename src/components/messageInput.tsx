@@ -56,7 +56,7 @@ export const MessageInput = ({
           <a target="_blank" href="https://github.com/zoan37/ChatVRM.git" className="underline">
             ChatVRM
           </a>,&nbsp;
-            Powered by&nbsp;
+          Reimagined by&nbsp;
           <a target="_blank" href="https://github.com/MelissaJSM/holoVRM.git" className="underline">
             MelissaJ
           </a>

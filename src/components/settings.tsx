@@ -55,7 +55,7 @@ export const Settings = ({
                              onClickResetSystemPrompt,
                          }: Props) => {
     const { viewer } = useContext(ViewerContext);
-    const [selectedCharacter, setSelectedCharacter] = useState(lastCharacter || "default");
+    let [selectedCharacter, setSelectedCharacter] = useState(lastCharacter || "default");
     const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
     useEffect(() => {
@@ -93,7 +93,23 @@ export const Settings = ({
     useEffect(() => {
         console.log('초기 설정 캐릭터:', selectedCharacter);
 
+        if (selectedCharacter.includes("miko")) {
+            selectedCharacter = "miko_1st";
+        } else if (selectedCharacter.includes("fubuki")) {
+            selectedCharacter = "fubuki";
+        } else if (selectedCharacter.includes("aqua")) {
+            selectedCharacter = "aqua";
+        } else if (selectedCharacter.includes("koyori")) {
+            selectedCharacter = "koyori";
+        } else if (selectedCharacter.includes("pekomama")) {
+            selectedCharacter = "pekomama";
+        }
+
+
+        console.log('중복 필터 캐릭터:', selectedCharacter);
+
         const characterPrompt = characterPrompts[selectedCharacter as keyof CharacterPrompts];
+
         onChangeSystemPrompt({ target: { value: characterPrompt } } as React.ChangeEvent<HTMLTextAreaElement>);
 
     }, [selectedCharacter]);
@@ -122,6 +138,9 @@ export const Settings = ({
         } else if (selectedValue.includes("koyori")) {
             adjustedValue = selectedValue;
             promptValue = "koyori";
+        } else if (selectedValue.includes("pekomama")) {
+            adjustedValue = selectedValue;
+            promptValue = "pekomama";
         }
 
         const characterPrompt = characterPrompts[promptValue as keyof CharacterPrompts];
@@ -158,7 +177,10 @@ export const Settings = ({
             body.style.backgroundImage = `url(${avatarBaseUrl}background/aqua.png)`;
         } else if (selectedCharacter.includes("koyori")) {
             body.style.backgroundImage = `url(${avatarBaseUrl}background/koyori.png)`;
-        } else {
+        } else if (selectedCharacter.includes("pekomama")) {
+            body.style.backgroundImage = `url(${avatarBaseUrl}background/pekomama.png)`;
+        }
+        else {
             body.style.backgroundImage = `url(${avatarBaseUrl}background/${selectedCharacter}.png)`;
         }
     }, [selectedCharacter]);
@@ -198,6 +220,7 @@ export const Settings = ({
         { value: "miko_miko", label: "사쿠라 미코(무녀)", image: `${avatarBaseUrl}background/miko_miko.png` },
         { value: "miko_3rd", label: "사쿠라 미코(3세대)", image: `${avatarBaseUrl}background/miko_3rd.png` },
         { value: "roboco", label: "로보코 씨", image: `${avatarBaseUrl}background/roboco.png` },
+        { value: "azki", label: "AZKi", image: `${avatarBaseUrl}background/azki.png` },
         { value: "default", label: "----- 홀로라이브 1기생 -----", image: `${avatarBaseUrl}background/default.png` },
         { value: "haato", label: "아카이 하아토", image: `${avatarBaseUrl}background/haato.png` },
         { value: "default", label: "----- 홀로라이브 2기생 -----", image: `${avatarBaseUrl}background/default.png` },
@@ -223,8 +246,20 @@ export const Settings = ({
         { value: "koyori", label: "하쿠이 코요리", image: `${avatarBaseUrl}background/koyori.png` },
         { value: "koyori_off", label: "하쿠이 코요리(코트 탈의)", image: `${avatarBaseUrl}background/koyori.png` },
         { value: "chloe", label: "사카마타 클로에", image: `${avatarBaseUrl}background/chloe.png` },
+        { value: "iroha", label: "카자마 이로하", image: `${avatarBaseUrl}background/iroha.png` },
         { value: "default", label: "----- Hololive Myth -----", image: `${avatarBaseUrl}background/default.png` },
         { value: "gura", label: "가우르 구라", image: `${avatarBaseUrl}background/gura.png` },
+        { value: "amelia", label: "왓슨 아멜리아", image: `${avatarBaseUrl}background/amelia.png` },
+        { value: "default", label: "----- Hololive Promise -----", image: `${avatarBaseUrl}background/default.png` },
+        { value: "fauna", label: "세레스 파우나", image: `${avatarBaseUrl}background/fauna.png` },
+        { value: "default", label: "----- Hololive Advent -----", image: `${avatarBaseUrl}background/default.png` },
+        { value: "fuwawa", label: "후와와 어비스가드", image: `${avatarBaseUrl}background/fuwawa.png` },
+        { value: "mococo", label: "모코코 어비스가드", image: `${avatarBaseUrl}background/mococo.png` },
+        { value: "bijou", label: "코세키 비쥬", image: `${avatarBaseUrl}background/bijou.png` },
+        { value: "default", label: "----- 마마라이브 -----", image: `${avatarBaseUrl}background/default.png` },
+        { value: "pekomama", label: "페코라 마미", image: `${avatarBaseUrl}background/pekomama.png` },
+        { value: "pekomamaap", label: "페코라 마미(에이프런)", image: `${avatarBaseUrl}background/pekomama.png` },
+        { value: "shigure", label: "시구레 우이", image: `${avatarBaseUrl}background/shigure.png` },
 
         // 추가적인 옵션들...
     ];

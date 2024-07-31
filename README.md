@@ -25,6 +25,7 @@ ChatVRM : <a href="https://github.com/zoan37/ChatVRM">https://github.com/zoan37/
 
 <h2>changelog</h2>
 
+0.9.9 gpt4o-mini 추가, Azki 추가, 카자마 이로하 추가, 세레스 파우나 추가, 후와와 어비스가드 추가, 모코코 어비스가드 추가, 코세키 비쥬 추가, 시구레 우이 추가<br>
 0.9.8 호쇼 마린 추가, 로그인 보안 기능 추가<br>
 0.9.7 관리자 권한 향상<br>
 0.9.6 UI 개선<br>
