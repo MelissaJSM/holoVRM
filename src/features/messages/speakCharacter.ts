@@ -1,7 +1,7 @@
 import { wait } from "@/utils/wait";
 import { Viewer } from "../vrmViewer/viewer";
 import { Screenplay } from "./messages";
-import { ElevenLabsParam } from "../constants/elevenLabsParam";
+import { CharacterVoiceParam } from "../constants/characterVoiceParam";
 
 const createSpeakCharacter = () => {
   let lastTime = 0;
@@ -10,8 +10,7 @@ const createSpeakCharacter = () => {
 
   return (
       screenplay: Screenplay,
-      elevenLabsKey: string,
-      elevenLabsParam: ElevenLabsParam,
+      characterVoiceParam: CharacterVoiceParam,
       viewer: Viewer,
       onStart?: () => void,
       onComplete?: () => void,

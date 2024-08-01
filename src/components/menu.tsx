@@ -1,6 +1,6 @@
 import { IconButton } from "./iconButton";
 import { Message } from "@/features/messages/messages";
-import { ElevenLabsParam } from "@/features/constants/elevenLabsParam";
+import { CharacterVoiceParam } from "@/features/constants/characterVoiceParam";
 import { KoeiroParam } from "@/features/constants/koeiroParam";
 import { ChatLog } from "./chatLog";
 import React, { useCallback, useContext, useRef, useState, useEffect } from "react";
@@ -10,17 +10,15 @@ import { AssistantText } from "./assistantText";
 
 type Props = {
     openAiKey: string;
-    elevenLabsKey: string;
     systemPrompt: string;
     chatLog: Message[];
-    elevenLabsParam: ElevenLabsParam;
+    characterVoiceParam: CharacterVoiceParam;
     koeiroParam: KoeiroParam;
     assistantMessage: string;
     onChangeSystemPrompt: (systemPrompt: string) => void;
     onChangeAiKey: (key: string) => void;
-    onChangeElevenLabsKey: (key: string) => void;
     onChangeChatLog: (index: number, text: string) => void;
-    onChangeElevenLabsParam: (param: ElevenLabsParam) => void;
+    onChangeCharacterVoiceParam: (param: CharacterVoiceParam) => void;
     onChangeKoeiroParam: (param: KoeiroParam) => void;
     handleClickResetChatLog: () => void;
     handleClickResetSystemPrompt: () => void;
@@ -34,17 +32,15 @@ type Props = {
 
 export const Menu = ({
                          openAiKey,
-                         elevenLabsKey,
                          systemPrompt,
                          chatLog,
-                         elevenLabsParam,
+                         characterVoiceParam,
                          koeiroParam,
                          assistantMessage,
                          onChangeSystemPrompt,
                          onChangeAiKey,
-                         onChangeElevenLabsKey,
                          onChangeChatLog,
-                         onChangeElevenLabsParam,
+                         onChangeCharacterVoiceParam,
                          onChangeKoeiroParam,
                          handleClickResetChatLog,
                          handleClickResetSystemPrompt,
@@ -73,21 +69,15 @@ export const Menu = ({
         },
         [onChangeAiKey]
     );
+    
 
-    const handleElevenLabsKeyChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            onChangeElevenLabsKey(event.target.value);
-        },
-        [onChangeElevenLabsKey]
-    );
-
-    const handleElevenLabsVoiceChange = useCallback(
+    const handleCharacterVoiceChange = useCallback(
         (event: React.ChangeEvent<HTMLSelectElement>) => {
-            onChangeElevenLabsParam({
+            onChangeCharacterVoiceParam({
                 voiceId: event.target.value
             });
         },
-        [onChangeElevenLabsParam]
+        [onChangeCharacterVoiceParam]
     );
 
     const handleChangeKoeiroParam = useCallback(
@@ -221,15 +211,13 @@ export const Menu = ({
             {showSettings && (
                 <Settings
                     openAiKey={openAiKey}
-                    elevenLabsKey={elevenLabsKey}
-                    elevenLabsParam={elevenLabsParam}
+                    characterVoiceParam={characterVoiceParam}
                     chatLog={chatLog}
                     systemPrompt={systemPrompt}
                     koeiroParam={koeiroParam}
                     onClickClose={() => setShowSettings(false)}
                     onChangeAiKey={handleAiKeyChange}
-                    onChangeElevenLabsKey={handleElevenLabsKeyChange}
-                    onChangeElevenLabsVoice={handleElevenLabsVoiceChange}
+                    onChangeCharacterVoice={handleCharacterVoiceChange}
                     onChangeSystemPrompt={handleChangeSystemPrompt}
                     onChangeChatLog={onChangeChatLog}
                     onChangeKoeiroParam={handleChangeKoeiroParam}

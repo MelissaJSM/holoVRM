@@ -8,7 +8,7 @@ export const AssistantText = ({ message }: { message: string }) => {
           </div>
           <div className="px-24 py-16">
             <div className="text-secondary typography-16 font-M_PLUS_2 font-bold">
-              {message.replace(/\[([a-zA-Z]*?)\]/g, "")}
+              {message.replace(/\[([a-zA-Z]*?)]/g, "")}
             </div>
           </div>
         </div>

@@ -58,7 +58,7 @@ export default function VrmViewer() {
         if (canvas) {
           viewer.setup(canvas);
           const savedParams = JSON.parse(window.localStorage.getItem("chatVRMParams") as string);
-          const avatarName = savedParams?.elevenLabsParam?.voiceId || "AvatarSample_B";
+          const avatarName = savedParams?.characterVoiceParam?.voiceId || "AvatarSample_B";
           loadAvatar(avatarName);
 
           // Drag and Drop으로 VRM을 교체

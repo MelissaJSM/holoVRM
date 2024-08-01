@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
 import { fetchWithToken, fetchMemos, addMemo, deleteMemo } from '@/lib/api';
-import { parseISO, startOfISOWeek, format } from 'date-fns';
+import { startOfISOWeek, format } from 'date-fns';
 import LogTable from '../components/LogTable';
 
 type UserStat = {
@@ -47,11 +47,11 @@ type BannedIP = {
 };
 
 const AdminControl = () => {
-    const [userStats, setUserStats] = useState<UserStat[]>([]);
-    const [sessionStats, setSessionStats] = useState<SessionStat[]>([]);
-    const [userLoginStats, setUserLoginStats] = useState<SessionStat[]>([]);
-    const [characterStats, setCharacterStats] = useState<CharacterStat[]>([]);
-    const [totalStats, setTotalStats] = useState<any[]>([]);
+    const [, setUserStats] = useState<UserStat[]>([]);
+    const [, setSessionStats] = useState<SessionStat[]>([]);
+    const [, setUserLoginStats] = useState<SessionStat[]>([]);
+    const [, setCharacterStats] = useState<CharacterStat[]>([]);
+    const [, setTotalStats] = useState<any[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     const [activeTab, setActiveTab] = useState('stats');
     const [timeUnit, setTimeUnit] = useState<'year' | 'month' | 'week' | 'day'>('day');

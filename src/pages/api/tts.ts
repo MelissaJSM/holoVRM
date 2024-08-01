@@ -1,5 +1,3 @@
-import fetch from "node-fetch";
-import { synthesizeVoice } from "@/features/elevenlabs/elevenlabs";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 

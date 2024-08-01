@@ -1,4 +1,3 @@
-import { buildUrl } from "@/utils/buildUrl";
 import Head from "next/head";
 export const Meta = () => {
   const title = "HoloVRM";

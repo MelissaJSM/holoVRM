@@ -30,10 +30,6 @@ const LogTable: React.FC<LogTableProps> = ({ logs, onBanIPSuccess }) => {
                 alert(`Error: ${errorData.error}, Details: ${errorData.details}`);
             }
         } catch (error: unknown) {
-            let errorMessage = 'Failed to ban IP address';
-            if (error instanceof Error) {
-                errorMessage = error.message;
-            }
             console.error('Failed to ban IP address:', error);
             alert("차단이 완료되었습니다.");
             onBanIPSuccess(); // 성공적으로 IP를 차단한 후 콜백 함수 호출

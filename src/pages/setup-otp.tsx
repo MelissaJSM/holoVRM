@@ -5,7 +5,7 @@ import QRCode from 'qrcode';
 
 const SetupOtp = () => {
     const [qrCodeUrl, setQrCodeUrl] = useState('');
-    const [otpSecret, setOtpSecret] = useState('');
+    const [, setOtpSecret] = useState('');
     const [otp, setOtp] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -146,68 +146,6 @@ const SetupOtp = () => {
                 </div>
             </div>
             <style jsx>{`
-                .relative {
-                    background-image: url('/background.png');
-                }
-
-                .text-area {
-                    width: 40%;
-                    height: auto;
-                    background-color: rgba(255, 255, 255, 0.75); /* 반투명 배경 */
-                    border-radius: 10px;
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                    margin-bottom: 150px;
-                    transform: translateY(90px);
-                }
-
-                .header {
-                    width: 100%;
-                    background-color: #ff66a3;
-                    color: #fff;
-                    display: flex;
-                    align-items: center;
-                    padding: 10px;
-                    border-top-left-radius: 10px;
-                    border-top-right-radius: 10px;
-                }
-
-                .content {
-                    padding: 20px;
-                    text-align: center;
-                }
-
-                .qr-code-container {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                }
-
-                .title-text {
-                    font-size: 26px;
-                    color: white;
-                }
-
-                .description-text {
-                    font-size: 18px;
-                    color: black;
-                    text-shadow: -2px 0px white, 0px 2px white, 2px 0px white, 0px -2px white;
-                }
-
-                .chat-input {
-                    width: 250px;
-                    padding: 10px;
-                    margin: 0 5px;
-                    border: 2px solid #ddd;
-                    border-radius: 20px;
-                    outline: none;
-                    font-size: 16px;
-                    background-color: rgba(255, 255, 255, 0.8);
-                }
-
-                .chat-input::placeholder {
-                    color: #888;
-                }
-
                 button {
                     width: 100px;
                     padding: 10px;

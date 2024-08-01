@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import {fontSize} from "@mui/system";
 
 const Signup = () => {
     const [userId, setUserId] = useState('');

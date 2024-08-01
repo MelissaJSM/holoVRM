@@ -1,20 +1,16 @@
-import React, { useEffect, useState, useContext } from "react";
-import { IconButton } from "./iconButton";
-import { TextButton } from "./textButton";
-import { Message } from "@/features/messages/messages";
-import { KoeiroParam } from "@/features/constants/koeiroParam";
-import { ElevenLabsParam } from "@/features/constants/elevenLabsParam";
-import characterPrompts, { CharacterPrompts } from "@/features/constants/prompts";
-import { ViewerContext } from "@/features/vrmViewer/viewerContext";
-
-const avatarBaseUrl = process.env.NEXT_PUBLIC_AVATAR_BASE_URL;
+import React, {useEffect, useState, useContext} from "react";
+import {IconButton} from "./iconButton";
+import {Message} from "@/features/messages/messages";
+import {KoeiroParam} from "@/features/constants/koeiroParam";
+import {CharacterVoiceParam} from "@/features/constants/characterVoiceParam";
+import characterPrompts, {CharacterPrompts} from "@/features/constants/prompts";
+import {ViewerContext} from "@/features/vrmViewer/viewerContext";
 
 type Props = {
     openAiKey: string;
-    elevenLabsKey: string;
     systemPrompt: string;
     chatLog: Message[];
-    elevenLabsParam: ElevenLabsParam;
+    characterVoiceParam: CharacterVoiceParam;
     koeiroParam: KoeiroParam;
     userId: string;
     summary: string;
@@ -22,8 +18,7 @@ type Props = {
     lastCharacter?: string;
     onClickClose: () => void;
     onChangeAiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    onChangeElevenLabsKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    onChangeElevenLabsVoice: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+    onChangeCharacterVoice: (event: React.ChangeEvent<HTMLSelectElement>) => void;
     onChangeSystemPrompt: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
     onChangeChatLog: (index: number, text: string) => void;
     onChangeKoeiroParam: (x: number, y: number) => void;
@@ -33,28 +28,19 @@ type Props = {
 };
 
 export const Settings = ({
-                             openAiKey,
-                             elevenLabsKey,
                              systemPrompt,
                              chatLog,
-                             elevenLabsParam,
-                             koeiroParam,
                              userId,
-                             summary,
                              setSummary,
                              lastCharacter,
                              onClickClose,
                              onChangeSystemPrompt,
-                             onChangeAiKey,
-                             onChangeElevenLabsKey,
-                             onChangeElevenLabsVoice,
+                             onChangeCharacterVoice,
                              onChangeChatLog,
-                             onChangeKoeiroParam,
-                             onClickOpenVrmFile,
                              onClickResetChatLog,
-                             onClickResetSystemPrompt,
+
                          }: Props) => {
-    const { viewer } = useContext(ViewerContext);
+    const {viewer} = useContext(ViewerContext);
     let [selectedCharacter, setSelectedCharacter] = useState(lastCharacter || "default");
     const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
@@ -63,11 +49,11 @@ export const Settings = ({
             if (userId.startsWith("session_")) {
                 const sessionParams = sessionStorage.getItem(`chatVRMParams_${userId}`);
                 if (sessionParams) {
-                    const { elevenLabsParam, systemPrompt } = JSON.parse(sessionParams);
-                    setSelectedCharacter(elevenLabsParam.voiceId);
-                    onChangeElevenLabsVoice({ target: { value: elevenLabsParam.voiceId } } as React.ChangeEvent<HTMLSelectElement>);
-                    onChangeSystemPrompt({ target: { value: systemPrompt } } as React.ChangeEvent<HTMLTextAreaElement>);
-                    viewer.loadVrm(`${avatarBaseUrl}${elevenLabsParam.voiceId}.vrm`);
+                    const {characterVoiceParam, systemPrompt} = JSON.parse(sessionParams);
+                    setSelectedCharacter(characterVoiceParam.voiceId);
+                    onChangeCharacterVoice({target: {value: characterVoiceParam.voiceId}} as React.ChangeEvent<HTMLSelectElement>);
+                    onChangeSystemPrompt({target: {value: systemPrompt}} as React.ChangeEvent<HTMLTextAreaElement>);
+                    viewer.loadVrm(`${avatarBaseUrl}${characterVoiceParam.voiceId}.vrm`);
                 }
             } else {
                 try {
@@ -77,8 +63,8 @@ export const Settings = ({
                         const character = data.lastCharacter || "default";
                         setSelectedCharacter(character);
                         const characterPrompt = characterPrompts[character as keyof CharacterPrompts];
-                        onChangeElevenLabsVoice({ target: { value: character } } as React.ChangeEvent<HTMLSelectElement>);
-                        onChangeSystemPrompt({ target: { value: characterPrompt } } as React.ChangeEvent<HTMLTextAreaElement>);
+                        onChangeCharacterVoice({target: {value: character}} as React.ChangeEvent<HTMLSelectElement>);
+                        onChangeSystemPrompt({target: {value: characterPrompt}} as React.ChangeEvent<HTMLTextAreaElement>);
                         viewer.loadVrm(`${avatarBaseUrl}${character}.vrm`);
                     }
                 } catch (error) {
@@ -88,7 +74,7 @@ export const Settings = ({
         };
 
         fetchLastCharacter();
-    }, [userId, onChangeElevenLabsVoice, onChangeSystemPrompt, viewer]);
+    }, [userId, onChangeCharacterVoice, onChangeSystemPrompt, viewer]);
 
     useEffect(() => {
         console.log('초기 설정 캐릭터:', selectedCharacter);
@@ -110,7 +96,7 @@ export const Settings = ({
 
         const characterPrompt = characterPrompts[selectedCharacter as keyof CharacterPrompts];
 
-        onChangeSystemPrompt({ target: { value: characterPrompt } } as React.ChangeEvent<HTMLTextAreaElement>);
+        onChangeSystemPrompt({target: {value: characterPrompt}} as React.ChangeEvent<HTMLTextAreaElement>);
 
     }, [selectedCharacter]);
 
@@ -120,7 +106,7 @@ export const Settings = ({
         console.log('캐릭터 변경:', selectedValue);
 
         if (!selectedValue.includes("default")) {
-            window.dispatchEvent(new CustomEvent("changeAvatar", { detail: selectedValue }));
+            window.dispatchEvent(new CustomEvent("changeAvatar", {detail: selectedValue}));
         }
 
         let adjustedValue = selectedValue;
@@ -144,10 +130,10 @@ export const Settings = ({
         }
 
         const characterPrompt = characterPrompts[promptValue as keyof CharacterPrompts];
-        onChangeElevenLabsVoice({ target: { value: adjustedValue } } as React.ChangeEvent<HTMLSelectElement>);
-        onChangeSystemPrompt({ target: { value: characterPrompt } } as React.ChangeEvent<HTMLTextAreaElement>);
+        onChangeCharacterVoice({target: {value: adjustedValue}} as React.ChangeEvent<HTMLSelectElement>);
+        onChangeSystemPrompt({target: {value: characterPrompt}} as React.ChangeEvent<HTMLTextAreaElement>);
 
-        const updatedParams = { elevenLabsParam: { voiceId: adjustedValue }, systemPrompt: characterPrompt };
+        const updatedParams = {characterVoiceParam: {voiceId: adjustedValue}, systemPrompt: characterPrompt};
         if (userId.startsWith("session_")) {
             sessionStorage.setItem(`chatVRMParams_${userId}`, JSON.stringify(updatedParams));
         } else {
@@ -160,7 +146,7 @@ export const Settings = ({
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ userId, lastCharacter: adjustedValue })
+                body: JSON.stringify({userId, lastCharacter: adjustedValue})
             });
         }
 
@@ -179,8 +165,7 @@ export const Settings = ({
             body.style.backgroundImage = `url(${avatarBaseUrl}background/koyori.png)`;
         } else if (selectedCharacter.includes("pekomama")) {
             body.style.backgroundImage = `url(${avatarBaseUrl}background/pekomama.png)`;
-        }
-        else {
+        } else {
             body.style.backgroundImage = `url(${avatarBaseUrl}background/${selectedCharacter}.png)`;
         }
     }, [selectedCharacter]);
@@ -214,52 +199,52 @@ export const Settings = ({
     const avatarBaseUrl = process.env.NEXT_PUBLIC_AVATAR_BASE_URL;
 
     const characterOptions = [
-        { value: "default", label: "캐릭터를 선택해주세요", image: `${avatarBaseUrl}background/default.png` },
-        { value: "default", label: "----- 홀로라이브 0기생 -----", image: `${avatarBaseUrl}background/default.png` },
-        { value: "miko_1st", label: "사쿠라 미코(1세대)", image: `${avatarBaseUrl}background/miko_1st.png` },
-        { value: "miko_miko", label: "사쿠라 미코(무녀)", image: `${avatarBaseUrl}background/miko_miko.png` },
-        { value: "miko_3rd", label: "사쿠라 미코(3세대)", image: `${avatarBaseUrl}background/miko_3rd.png` },
-        { value: "roboco", label: "로보코 씨", image: `${avatarBaseUrl}background/roboco.png` },
-        { value: "azki", label: "AZKi", image: `${avatarBaseUrl}background/azki.png` },
-        { value: "default", label: "----- 홀로라이브 1기생 -----", image: `${avatarBaseUrl}background/default.png` },
-        { value: "haato", label: "아카이 하아토", image: `${avatarBaseUrl}background/haato.png` },
-        { value: "default", label: "----- 홀로라이브 2기생 -----", image: `${avatarBaseUrl}background/default.png` },
-        { value: "aqua_made", label: "미나토 아쿠아(메이드)", image: `${avatarBaseUrl}background/aqua_made.png` },
-        { value: "aqua", label: "미나토 아쿠아(사복)", image: `${avatarBaseUrl}background/aqua.png` },
-        { value: "shion", label: "무라사키 시온", image: `${avatarBaseUrl}background/shion.png` },
-        { value: "default", label: "----- 홀로라이브 게이머즈 -----", image: `${avatarBaseUrl}background/default.png` },
-        { value: "fubuki", label: "시라카미 후부키", image: `${avatarBaseUrl}background/fubuki.png` },
-        { value: "fubuki_bunny", label: "시라카미 후부키(버니)", image: `${avatarBaseUrl}background/fubuki_bunny.png` },
-        { value: "korone", label: "이누가미 코로네", image: `${avatarBaseUrl}background/korone.png` },
-        { value: "okayu", label: "네코마타 오카유", image: `${avatarBaseUrl}background/okayu.png` },
-        { value: "mio", label: "오오카미 미오", image: `${avatarBaseUrl}background/mio.png` },
-        { value: "default", label: "----- 홀로라이브 3기생 -----", image: `${avatarBaseUrl}background/default.png` },
-        { value: "pekora", label: "우사다 페코라", image: `${avatarBaseUrl}background/pekora.png` },
-        { value: "marine", label: "호쇼 마린", image: `${avatarBaseUrl}background/marine.png` },
-        { value: "default", label: "----- 홀로라이브 4기생 -----", image: `${avatarBaseUrl}background/default.png` },
-        { value: "watame", label: "츠노마키 와타메", image: `${avatarBaseUrl}background/watame.png` },
-        { value: "default", label: "----- 홀로라이브 5기생 -----", image: `${avatarBaseUrl}background/default.png` },
-        { value: "lamy", label: "유키하나 라미", image: `${avatarBaseUrl}background/lamy.png` },
-        { value: "nene", label: "모모스즈 네네", image: `${avatarBaseUrl}background/nene.png` },
-        { value: "default", label: "----- 비밀결사 holoX -----", image: `${avatarBaseUrl}background/default.png` },
-        { value: "laplus", label: "라프라스 다크니스", image: `${avatarBaseUrl}background/laplus.png` },
-        { value: "koyori", label: "하쿠이 코요리", image: `${avatarBaseUrl}background/koyori.png` },
-        { value: "koyori_off", label: "하쿠이 코요리(코트 탈의)", image: `${avatarBaseUrl}background/koyori.png` },
-        { value: "chloe", label: "사카마타 클로에", image: `${avatarBaseUrl}background/chloe.png` },
-        { value: "iroha", label: "카자마 이로하", image: `${avatarBaseUrl}background/iroha.png` },
-        { value: "default", label: "----- Hololive Myth -----", image: `${avatarBaseUrl}background/default.png` },
-        { value: "gura", label: "가우르 구라", image: `${avatarBaseUrl}background/gura.png` },
-        { value: "amelia", label: "왓슨 아멜리아", image: `${avatarBaseUrl}background/amelia.png` },
-        { value: "default", label: "----- Hololive Promise -----", image: `${avatarBaseUrl}background/default.png` },
-        { value: "fauna", label: "세레스 파우나", image: `${avatarBaseUrl}background/fauna.png` },
-        { value: "default", label: "----- Hololive Advent -----", image: `${avatarBaseUrl}background/default.png` },
-        { value: "fuwawa", label: "후와와 어비스가드", image: `${avatarBaseUrl}background/fuwawa.png` },
-        { value: "mococo", label: "모코코 어비스가드", image: `${avatarBaseUrl}background/mococo.png` },
-        { value: "bijou", label: "코세키 비쥬", image: `${avatarBaseUrl}background/bijou.png` },
-        { value: "default", label: "----- 마마라이브 -----", image: `${avatarBaseUrl}background/default.png` },
-        { value: "pekomama", label: "페코라 마미", image: `${avatarBaseUrl}background/pekomama.png` },
-        { value: "pekomamaap", label: "페코라 마미(에이프런)", image: `${avatarBaseUrl}background/pekomama.png` },
-        { value: "shigure", label: "시구레 우이", image: `${avatarBaseUrl}background/shigure.png` },
+        {value: "default", label: "캐릭터를 선택해주세요", image: `${avatarBaseUrl}background/default.png`},
+        {value: "default", label: "----- 홀로라이브 0기생 -----", image: `${avatarBaseUrl}background/default.png`},
+        {value: "miko_1st", label: "사쿠라 미코(1세대)", image: `${avatarBaseUrl}background/miko_1st.png`},
+        {value: "miko_miko", label: "사쿠라 미코(무녀)", image: `${avatarBaseUrl}background/miko_miko.png`},
+        {value: "miko_3rd", label: "사쿠라 미코(3세대)", image: `${avatarBaseUrl}background/miko_3rd.png`},
+        {value: "roboco", label: "로보코 씨", image: `${avatarBaseUrl}background/roboco.png`},
+        {value: "azki", label: "AZKi", image: `${avatarBaseUrl}background/azki.png`},
+        {value: "default", label: "----- 홀로라이브 1기생 -----", image: `${avatarBaseUrl}background/default.png`},
+        {value: "haato", label: "아카이 하아토", image: `${avatarBaseUrl}background/haato.png`},
+        {value: "default", label: "----- 홀로라이브 2기생 -----", image: `${avatarBaseUrl}background/default.png`},
+        {value: "aqua_made", label: "미나토 아쿠아(메이드)", image: `${avatarBaseUrl}background/aqua_made.png`},
+        {value: "aqua", label: "미나토 아쿠아(사복)", image: `${avatarBaseUrl}background/aqua.png`},
+        {value: "shion", label: "무라사키 시온", image: `${avatarBaseUrl}background/shion.png`},
+        {value: "default", label: "----- 홀로라이브 게이머즈 -----", image: `${avatarBaseUrl}background/default.png`},
+        {value: "fubuki", label: "시라카미 후부키", image: `${avatarBaseUrl}background/fubuki.png`},
+        {value: "fubuki_bunny", label: "시라카미 후부키(버니)", image: `${avatarBaseUrl}background/fubuki_bunny.png`},
+        {value: "korone", label: "이누가미 코로네", image: `${avatarBaseUrl}background/korone.png`},
+        {value: "okayu", label: "네코마타 오카유", image: `${avatarBaseUrl}background/okayu.png`},
+        {value: "mio", label: "오오카미 미오", image: `${avatarBaseUrl}background/mio.png`},
+        {value: "default", label: "----- 홀로라이브 3기생 -----", image: `${avatarBaseUrl}background/default.png`},
+        {value: "pekora", label: "우사다 페코라", image: `${avatarBaseUrl}background/pekora.png`},
+        {value: "marine", label: "호쇼 마린", image: `${avatarBaseUrl}background/marine.png`},
+        {value: "default", label: "----- 홀로라이브 4기생 -----", image: `${avatarBaseUrl}background/default.png`},
+        {value: "watame", label: "츠노마키 와타메", image: `${avatarBaseUrl}background/watame.png`},
+        {value: "default", label: "----- 홀로라이브 5기생 -----", image: `${avatarBaseUrl}background/default.png`},
+        {value: "lamy", label: "유키하나 라미", image: `${avatarBaseUrl}background/lamy.png`},
+        {value: "nene", label: "모모스즈 네네", image: `${avatarBaseUrl}background/nene.png`},
+        {value: "default", label: "----- 비밀결사 holoX -----", image: `${avatarBaseUrl}background/default.png`},
+        {value: "laplus", label: "라프라스 다크니스", image: `${avatarBaseUrl}background/laplus.png`},
+        {value: "koyori", label: "하쿠이 코요리", image: `${avatarBaseUrl}background/koyori.png`},
+        {value: "koyori_off", label: "하쿠이 코요리(코트 탈의)", image: `${avatarBaseUrl}background/koyori.png`},
+        {value: "chloe", label: "사카마타 클로에", image: `${avatarBaseUrl}background/chloe.png`},
+        {value: "iroha", label: "카자마 이로하", image: `${avatarBaseUrl}background/iroha.png`},
+        {value: "default", label: "----- Hololive Myth -----", image: `${avatarBaseUrl}background/default.png`},
+        {value: "gura", label: "가우르 구라", image: `${avatarBaseUrl}background/gura.png`},
+        {value: "amelia", label: "왓슨 아멜리아", image: `${avatarBaseUrl}background/amelia.png`},
+        {value: "default", label: "----- Hololive Promise -----", image: `${avatarBaseUrl}background/default.png`},
+        {value: "fauna", label: "세레스 파우나", image: `${avatarBaseUrl}background/fauna.png`},
+        {value: "default", label: "----- Hololive Advent -----", image: `${avatarBaseUrl}background/default.png`},
+        {value: "fuwawa", label: "후와와 어비스가드", image: `${avatarBaseUrl}background/fuwawa.png`},
+        {value: "mococo", label: "모코코 어비스가드", image: `${avatarBaseUrl}background/mococo.png`},
+        {value: "bijou", label: "코세키 비쥬", image: `${avatarBaseUrl}background/bijou.png`},
+        {value: "default", label: "----- 마마라이브 -----", image: `${avatarBaseUrl}background/default.png`},
+        {value: "pekomama", label: "페코라 마미", image: `${avatarBaseUrl}background/pekomama.png`},
+        {value: "pekomamaap", label: "페코라 마미(에이프런)", image: `${avatarBaseUrl}background/pekomama.png`},
+        {value: "shigure", label: "시구레 우이", image: `${avatarBaseUrl}background/shigure.png`},
 
         // 추가적인 옵션들...
     ];
@@ -279,7 +264,7 @@ export const Settings = ({
                         className="h-full"
                         autoPlay
                         onEnded={handleVideoEnded}
-                        style={{ objectFit: "cover" }}
+                        style={{objectFit: "cover"}}
                         controls={false}
                     />
                 </div>

@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Link } from './link';
-import {fontSize} from "@mui/system";
 
 type Props = {
     openAiKey: string;
-    elevenLabsKey: string;
     onChangeAiKey: (openAiKey: string) => void;
-    onChangeElevenLabsKey: (elevenLabsKey: string) => void;
     onSubmitUserId: (userId: string, isSession: boolean, lastCharacter?: string) => void;
     onResetChatLog: () => void;
     onOpenSettings: () => void;
 };
 
 export const Introduction: React.FC<Props> = ({
-                                                  openAiKey,
-                                                  onChangeAiKey,
                                                   onSubmitUserId,
                                                   onResetChatLog,
                                                   onOpenSettings,

@@ -11,7 +11,7 @@ import { Menu } from "@/components/menu";
 import { Meta } from "@/components/meta";
 import { GitHubLink } from "@/components/githubLink";
 
-import { ElevenLabsParam, DEFAULT_ELEVEN_LABS_PARAM } from "@/features/constants/elevenLabsParam";
+import { CharacterVoiceParam, DEFAULT_CHARACTER_VOICE_PARAM } from "@/features/constants/characterVoiceParam";
 import characterPrompts, { CharacterPrompts } from "@/features/constants/prompts";
 
 import { M_PLUS_2, Montserrat } from 'next/font/google';
@@ -27,15 +27,14 @@ export default function Home() {
     const [lastCharacter, setLastCharacter] = useState<string | undefined>(undefined);
     const [systemPrompt, setSystemPrompt] = useState(SYSTEM_PROMPT);
     const [openAiKey, setOpenAiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_KEY || "");
-    const [elevenLabsKey, setElevenLabsKey] = useState(process.env.NEXT_PUBLIC_ELEVEN_LABS_KEY || "");
-    const [elevenLabsParam, setElevenLabsParam] = useState<ElevenLabsParam>(DEFAULT_ELEVEN_LABS_PARAM);
+    const [characterVoiceParam, setCharacterVoiceParam] = useState<CharacterVoiceParam>(DEFAULT_CHARACTER_VOICE_PARAM);
     const [koeiroParam, setKoeiroParam] = useState<KoeiroParam>(DEFAULT_KOEIRO_PARAM);
     const [chatProcessing, setChatProcessing] = useState(false);
     const [chatLog, setChatLog] = useState<Message[]>([]);
     const [assistantMessage, setAssistantMessage] = useState("");
     const [summary, setSummary] = useState("");
     const [showIntro, setShowIntro] = useState(true);
-    const [showSettings, setShowSettings] = useState(false);
+    const [, setShowSettings] = useState(false);
     const [showAssistantMessage, setShowAssistantMessage] = useState(true);
 
     const easterEgg = `
@@ -104,7 +103,7 @@ export default function Home() {
 
     const loadDefaultParams = () => {
         setSystemPrompt(SYSTEM_PROMPT);
-        setElevenLabsParam(DEFAULT_ELEVEN_LABS_PARAM);
+        setCharacterVoiceParam(DEFAULT_CHARACTER_VOICE_PARAM);
         setChatLog([]);
         setSummary("");
         setCharacter("default");
@@ -123,13 +122,13 @@ export default function Home() {
     const setCharacter = (character: keyof CharacterPrompts | "default") => {
         if (character === "default") {
             document.body.style.backgroundImage = "";
-            setElevenLabsParam((prev) => ({ ...prev, voiceId: "" }));
+            setCharacterVoiceParam((prev) => ({ ...prev, voiceId: "" }));
             setSystemPrompt(SYSTEM_PROMPT);
             console.log("Character set to default");
         } else {
             const backgroundImageUrl = process.env.NEXT_PUBLIC_AVATAR_BASE_URL;
             document.body.style.backgroundImage = `url(${backgroundImageUrl}background/${character}.png)`; // 여기 안쓰는거아냐?
-            setElevenLabsParam((prev) => ({ ...prev, voiceId: character }));
+            setCharacterVoiceParam((prev) => ({ ...prev, voiceId: character }));
             setSystemPrompt(characterPrompts[character]);
             console.log("Character set to:", character, "Prompt:", characterPrompts[character]);
         }
@@ -153,13 +152,12 @@ export default function Home() {
     const handleSpeakAi = useCallback(
         async (
             screenplay: Screenplay,
-            elevenLabsKey: string,
-            elevenLabsParam: ElevenLabsParam,
+            characterVoiceParam: CharacterVoiceParam,
             onStart?: () => void,
             onEnd?: () => void,
             audioBuffer?: ArrayBuffer
         ) => {
-            speakCharacter(screenplay, elevenLabsKey, elevenLabsParam, viewer, onStart, () => {
+            speakCharacter(screenplay, characterVoiceParam, viewer, onStart, () => {
                 if (onEnd) onEnd();
                 setTimeout(() => {
                     setShowAssistantMessage(false);
@@ -234,7 +232,6 @@ export default function Home() {
                 const gptResponse = await getGpt4Response(messageLog, openAiKey, userId.startsWith("session_"));
 
                 const newAssistantMessage: Message = { role: "assistant", content: gptResponse };
-                const updatedMessageLog = [...chatLog, newAssistantMessage];
                 setChatLog(prev => [...prev, newAssistantMessage]);
 
                 const recentMessages = [newMessage, newAssistantMessage];
@@ -246,19 +243,19 @@ export default function Home() {
 
                 let character;
 
-                if ((elevenLabsParam.voiceId).includes("miko")) {
+                if ((characterVoiceParam.voiceId).includes("miko")) {
                     character = "miko_1st";
-                } else if ((elevenLabsParam.voiceId).includes("fubuki")) {
+                } else if ((characterVoiceParam.voiceId).includes("fubuki")) {
                     character = "fubuki";
-                } else if ((elevenLabsParam.voiceId).includes("aqua")) {
+                } else if ((characterVoiceParam.voiceId).includes("aqua")) {
                     character = "aqua";
-                } else if ((elevenLabsParam.voiceId).includes("koyori")) {
+                } else if ((characterVoiceParam.voiceId).includes("koyori")) {
                     character = "koyori";
-                } else if ((elevenLabsParam.voiceId).includes("pekomama")) {
+                } else if ((characterVoiceParam.voiceId).includes("pekomama")) {
                     character = "pekomama";
                 }
                 else {
-                    character = elevenLabsParam.voiceId || "miko";
+                    character = characterVoiceParam.voiceId || "miko";
                 }
 
                 const ttsEndpoint = process.env.NEXT_PUBLIC_TTS_SERVER;
@@ -282,7 +279,7 @@ export default function Home() {
 
                 const audioBuffer = await response.arrayBuffer();
 
-                handleSpeakAi(screenplay, elevenLabsKey, elevenLabsParam, () => {
+                handleSpeakAi(screenplay, characterVoiceParam, () => {
                     setAssistantMessage(gptResponse);
                     setShowAssistantMessage(true);
                 }, undefined, audioBuffer);
@@ -346,7 +343,7 @@ export default function Home() {
                 setChatProcessing(false);
             }
         },
-        [chatLog, elevenLabsKey, elevenLabsParam, handleSpeakAi, koeiroParam, openAiKey, summary, systemPrompt, userId]
+        [chatLog,  characterVoiceParam, handleSpeakAi, koeiroParam, openAiKey, summary, systemPrompt, userId]
     );
 
     return (
@@ -355,9 +352,7 @@ export default function Home() {
             {showIntro ? (
                 <Introduction
                     openAiKey={openAiKey}
-                    elevenLabsKey={elevenLabsKey}
                     onChangeAiKey={setOpenAiKey}
-                    onChangeElevenLabsKey={setElevenLabsKey}
                     onSubmitUserId={handleUserIdSubmit}
                     onResetChatLog={resetChatLog}
                     onOpenSettings={openSettings}
@@ -371,17 +366,15 @@ export default function Home() {
                     />
                     <Menu
                         openAiKey={openAiKey}
-                        elevenLabsKey={elevenLabsKey}
                         systemPrompt={systemPrompt}
                         chatLog={chatLog}
-                        elevenLabsParam={elevenLabsParam}
+                        characterVoiceParam={characterVoiceParam}
                         koeiroParam={koeiroParam}
                         assistantMessage={assistantMessage}
                         onChangeAiKey={setOpenAiKey}
-                        onChangeElevenLabsKey={setElevenLabsKey}
                         onChangeSystemPrompt={setSystemPrompt}
                         onChangeChatLog={handleChangeChatLog}
-                        onChangeElevenLabsParam={setElevenLabsParam}
+                        onChangeCharacterVoiceParam={setCharacterVoiceParam}
                         onChangeKoeiroParam={setKoeiroParam}
                         handleClickResetChatLog={resetChatLog}
                         handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
