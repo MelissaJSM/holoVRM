@@ -19,7 +19,6 @@ import { M_PLUS_2, Montserrat } from 'next/font/google';
 const m_plus_2 = M_PLUS_2({ variable: "--font-m-plus-2", subsets: ["latin"], display: "swap" });
 const montserrat = Montserrat({ variable: "--font-montserrat", subsets: ["latin"], display: "swap" });
 
-const easterEgg ='';
 
 export default function Home() {
     const { viewer } = useContext(ViewerContext);
