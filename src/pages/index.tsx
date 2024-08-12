@@ -41,7 +41,7 @@ export default function Home() {
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡐⠀⠀⠀⠀⠀⠀⠀⠀⠄⠠⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⢈⠐⡡⠀⠀⠀⠀⠀⡀⠌⡀⢃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⢐⠠⠂⣄⠀⠀⠀⠠⠐⡨⢀⠸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡆⠊⠈⠀⢐⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⢐⠠⠂⣄⠀⠀⠀⠠⠐⡨⢀⠸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡆⠊⠈⠀⢐⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠄⡌⡢⠀⠄⠀⠀⡀⠀⠑⠄⡃⠀⠀⠀⠀⠀⠀⠀⠀⢔⠨⡢⣉⠖⡉⢕⠒⢤⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠄⢀⠈⢂⠅⠀⠠⠁⠠⢀⡒⢀⠀⠀⠀⠀⠀⢀⢐⠕⡡⢎⠔⡕⢨⠊⡔⡩⠢⡑⢕⣀⢀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⡀⠂⠀⡔⢁⠀⠄⠠⡀⡈⠐⠅⠠⡀⠀⠀⣄⠇⡱⡱⡨⡊⢜⢄⢣⡳⢈⣆⢙⡇⠧⣱⠉⢤⡂⠀⠀⠀⠀
@@ -88,16 +88,47 @@ export default function Home() {
         setShowSettings(true);
     }, []);
 
+    //이게 불러오기란건데
     const loadParams = async (inputUserId: string) => {
-        const response = await fetch('/api/chat?userId=' + inputUserId);
-        const data = await response.json();
-        if (data.success) {
-            const logs = data.chatLogs.map((log: { role: string; message: string }) => ({
-                role: log.role,
-                content: log.message // message를 content로 변환
-            }));
-            setChatLog(logs);
+
+        console.log("loadparams 진입");
+
+        if (userId.startsWith("session_")) {
+            console.log("loadparams 세션 진입");
+            let character_degree = sessionStorage.getItem('character_degree');
+            const response = await fetch(`/api/chat-session?character_degree=${character_degree}`);
+            const data = await response.json();
+
+            if (data.success) {
+                console.log("loadparams 성공");
+
+                const logs = data.chatLogs.map((log: { role: string; message: string }) => ({
+                    role: log.role,
+                    content: log.message, // message를 content로 변환
+                }));
+
+                setChatLog(logs);
+            }
         }
+        else {
+            console.log("loadparams 일반 진입");
+            let character_degree = sessionStorage.getItem('character_degree');
+            const response = await fetch('/api/chat?userId=' + inputUserId + "&character_degree=" + character_degree);
+            const data = await response.json();
+            if (data.success) {
+                console.log("loadparams 성공");
+
+                const logs = data.chatLogs.map((log: { role: string; message: string }) => ({
+                    role: log.role,
+                    content: log.message // message를 content로 변환
+                }));
+                setChatLog(logs);
+            }
+        }
+
+
+
+
     };
 
 
@@ -118,6 +149,8 @@ export default function Home() {
             }
         }
     }, [userId]);
+
+
 
     const setCharacter = (character: keyof CharacterPrompts | "default") => {
         if (character === "default") {
@@ -167,6 +200,38 @@ export default function Home() {
         },
         [viewer]
     );
+    //////////////////////////////////////////////////
+    const getEmoteResponse = async (text: string): Promise<{ [key: string]: number } | { error: string } & { translatedText?: string }> => {
+        try {
+            const response = await fetch('/api/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text }),
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error:', errorText);
+                return { error: errorText };
+            }
+
+            const data = await response.json();
+            console.log(`Translated text: ${data.translatedText}`);
+            return data;
+        } catch (error) {
+            console.error('Error:', error);
+            if (error instanceof Error) {
+                return { error: error.message };
+            } else {
+                return { error: 'Unknown error occurred' };
+            }
+        }
+    };
+
+
+    /////////////////////////////////////////////////
 
     const getGpt4Response = async (messages: Message[], openAiKey: string, isSession: boolean) => {
         const model = isSession ? "gpt-4o-mini" : "gpt-4o";
@@ -196,18 +261,45 @@ export default function Home() {
             content: "다음 대화를 요약해 주세요."
         };
         const summaryMessages = [summaryPrompt, ...recentMessages];
-        const summaryResponse = await getGpt4Response(summaryMessages, openAiKey, isSession);
+        const summaryResponse = await getGpt4Response(summaryMessages, openAiKey, isSession); // 요약용
         console.log("Summary Response:", summaryResponse);
         return summaryResponse;
     };
 
+
+
     const handleSendChat = useCallback(
         async (text: string) => {
+
+            setChatProcessing(true);
+            let emoteText = '';
+
+            if(userId.startsWith("session_")){
+                emoteText="";
+
+                //여기에 비활성화 상태라는 기능을 추가하도록 한다.
+
+            }
+            else{
+                // 여기서 text 변수를 사용해서 값을 이용해야겠네.
+                const emoteResult = await getEmoteResponse(text);
+                if ('error' in emoteResult) {
+                    console.error('Error:', emoteResult.error);
+                    //여기에 비활성화 상태라는 기능을 추가하도록 한다.
+                } else {
+                    console.log('Emotion analysis result:', emoteResult);
+                    emoteText = `아래 설명하는 감정 수치는 지금 대화를 IBM Watson Natural Language Understanding을 통해 분석한 것입니다.
+                감정 수치는 0에서 1.0까지의 범위를 가지며, 값이 1.0에 가까울수록 해당 감정이 강하다는 것을 의미합니다.
+                이 자료를 참고하여 사용자의 감정 상태를 이해하고 대화에 반영해 주시기 바랍니다.
+                감정 수치: ${JSON.stringify(emoteResult)})`;
+                }
+            }
+
+
+
             const newMessage: Message = { role: "user", content: text };
 
             if (newMessage == null) return;
-
-            setChatProcessing(true);
 
             let messageLog: Message[] = [
                 { role: "system", content: systemPrompt },
@@ -229,7 +321,16 @@ export default function Home() {
             setChatLog(prev => [...prev, newMessage]);
 
             try {
-                const gptResponse = await getGpt4Response(messageLog, openAiKey, userId.startsWith("session_"));
+                const gptMessages = messageLog.map((msg, index) => {
+                    if (index === messageLog.length - 1) {
+                        return { ...msg, content: msg.content + emoteText };
+                    }
+                    return msg;
+                });
+
+                console.log("Sending messages to GPT:", gptMessages);
+
+                const gptResponse = await getGpt4Response(gptMessages, openAiKey, userId.startsWith("session_")); // 대화용
 
                 const newAssistantMessage: Message = { role: "assistant", content: gptResponse };
                 setChatLog(prev => [...prev, newAssistantMessage]);
@@ -247,6 +348,8 @@ export default function Home() {
                     character = "miko_1st";
                 } else if ((characterVoiceParam.voiceId).includes("fubuki")) {
                     character = "fubuki";
+                } else if ((characterVoiceParam.voiceId).includes("mio")) {
+                    character = "mio";
                 } else if ((characterVoiceParam.voiceId).includes("aqua")) {
                     character = "aqua";
                 } else if ((characterVoiceParam.voiceId).includes("koyori")) {
@@ -284,6 +387,7 @@ export default function Home() {
                     setShowAssistantMessage(true);
                 }, undefined, audioBuffer);
 
+                let character_degree = sessionStorage.getItem('character_degree');
                 if (userId && !userId.startsWith("session_")) {
                     await fetch('/api/chat', {
                         method: 'POST',
@@ -294,7 +398,8 @@ export default function Home() {
                         body: JSON.stringify({
                             userId,
                             role: 'user',
-                            message: text
+                            message: text,
+                            character_degree
                         }),
                     });
 
@@ -307,7 +412,8 @@ export default function Home() {
                         body: JSON.stringify({
                             userId,
                             role: 'assistant',
-                            message: gptResponse
+                            message: gptResponse,
+                            character_degree
                         }),
                     });
 
@@ -323,7 +429,36 @@ export default function Home() {
                             message: gptResponse
                         }),
                     });
+
+
                 } else if (userId && userId.startsWith("session_")) {
+
+
+                    await fetch('/api/chat-session', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            role: 'user',
+                            message: text,
+                            character_degree,
+                        }),
+                    });
+
+                    await fetch('/api/chat-session', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            role: 'assistant',
+                            message: gptResponse,
+                            character_degree,
+                        }),
+                    });
+
+
                     await fetch('/api/characterLog', {
                         method: 'POST',
                         headers: {
@@ -332,7 +467,7 @@ export default function Home() {
                         body: JSON.stringify({
                             sessionId: userId,
                             character,
-                            message: gptResponse
+                            message: gptResponse,
                         }),
                     });
                 }
@@ -343,7 +478,7 @@ export default function Home() {
                 setChatProcessing(false);
             }
         },
-        [chatLog,  characterVoiceParam, handleSpeakAi, koeiroParam, openAiKey, summary, systemPrompt, userId]
+        [chatLog, characterVoiceParam, handleSpeakAi, koeiroParam, openAiKey, summary, systemPrompt, userId]
     );
 
     return (
@@ -384,6 +519,8 @@ export default function Home() {
                         setSummary={setSummary}
                         showAssistantMessage={showAssistantMessage}
                         lastCharacter={lastCharacter}
+                        loadParams={loadParams}  // loadParams 함수 전달
+
                     />
                     <GitHubLink />
                 </>

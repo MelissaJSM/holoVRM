@@ -1,33 +1,34 @@
-import { IconButton } from "./iconButton";
-import { Message } from "@/features/messages/messages";
-import { CharacterVoiceParam } from "@/features/constants/characterVoiceParam";
-import { KoeiroParam } from "@/features/constants/koeiroParam";
-import { ChatLog } from "./chatLog";
-import React, { useCallback, useContext, useRef, useState, useEffect } from "react";
-import { Settings } from "./settings";
-import { ViewerContext } from "@/features/vrmViewer/viewerContext";
-import { AssistantText } from "./assistantText";
+import {IconButton} from "./iconButton";
+import {Message} from "@/features/messages/messages";
+import {CharacterVoiceParam} from "@/features/constants/characterVoiceParam";
+import {KoeiroParam} from "@/features/constants/koeiroParam";
+import {ChatLog} from "./chatLog";
+import React, {useCallback, useContext, useRef, useState, useEffect} from "react";
+import {Settings} from "./settings";
+import {ViewerContext} from "@/features/vrmViewer/viewerContext";
+import {AssistantText} from "./assistantText";
 
 type Props = {
-    openAiKey: string;
-    systemPrompt: string;
-    chatLog: Message[];
-    characterVoiceParam: CharacterVoiceParam;
-    koeiroParam: KoeiroParam;
-    assistantMessage: string;
-    onChangeSystemPrompt: (systemPrompt: string) => void;
-    onChangeAiKey: (key: string) => void;
-    onChangeChatLog: (index: number, text: string) => void;
-    onChangeCharacterVoiceParam: (param: CharacterVoiceParam) => void;
-    onChangeKoeiroParam: (param: KoeiroParam) => void;
-    handleClickResetChatLog: () => void;
-    handleClickResetSystemPrompt: () => void;
-    onOpenSettings: () => void;
-    userId: string;
-    showAssistantMessage: boolean;
-    summary: string;
-    setSummary: React.Dispatch<React.SetStateAction<string>>;
-    lastCharacter?: string; // 추가된 부분
+    openAiKey: string,
+    systemPrompt: string,
+    chatLog: Message[],
+    characterVoiceParam: CharacterVoiceParam,
+    koeiroParam: KoeiroParam,
+    assistantMessage: string,
+    onChangeSystemPrompt: (systemPrompt: string) => void,
+    onChangeAiKey: (key: string) => void,
+    onChangeChatLog: (index: number, text: string) => void,
+    onChangeCharacterVoiceParam: (param: CharacterVoiceParam) => void,
+    onChangeKoeiroParam: (param: KoeiroParam) => void,
+    handleClickResetChatLog: () => void,
+    handleClickResetSystemPrompt: () => void,
+    onOpenSettings: () => void,
+    userId: string,
+    showAssistantMessage: boolean,
+    summary: string,
+    setSummary: React.Dispatch<React.SetStateAction<string>>,
+    lastCharacter?: string,
+    loadParams: (inputUserId: string) => void, // <--- 여기에 loadParams 추가
 };
 
 export const Menu = ({
@@ -49,11 +50,13 @@ export const Menu = ({
                          showAssistantMessage,
                          summary,
                          setSummary,
-                         lastCharacter // 추가된 부분
+                         lastCharacter,
+                         loadParams, // <--- 여기에 loadParams 추가
+
                      }: Props) => {
     const [showSettings, setShowSettings] = useState(false);
     const [showChatLog, setShowChatLog] = useState(false);
-    const { viewer } = useContext(ViewerContext);
+    const {viewer} = useContext(ViewerContext);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleChangeSystemPrompt = useCallback(
@@ -69,7 +72,7 @@ export const Menu = ({
         },
         [onChangeAiKey]
     );
-    
+
 
     const handleCharacterVoiceChange = useCallback(
         (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -105,7 +108,7 @@ export const Menu = ({
             const file_type = file.name.split(".").pop();
 
             if (file_type === "vrm") {
-                const blob = new Blob([file], { type: "application/octet-stream" });
+                const blob = new Blob([file], {type: "application/octet-stream"});
                 const url = window.URL.createObjectURL(blob);
                 viewer.loadVrm(url);
             }
@@ -228,6 +231,8 @@ export const Menu = ({
                     summary={summary} // 추가된 부분
                     setSummary={setSummary} // 추가된 부분
                     lastCharacter={lastCharacter} // 추가된 부분
+                    loadParams={loadParams}  // <--- 여기에 loadParams 추가
+
                 />
             )}
             {!showChatLog && showAssistantMessage && assistantMessage && (

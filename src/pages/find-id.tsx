@@ -1,11 +1,9 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-const Signup = () => {
-    const [userId, setUserId] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+const FindId = () => {
     const [email, setEmail] = useState('');
+    const [userId, setUserId] = useState('');
     const [error, setError] = useState('');
     const [turnstileToken, setTurnstileToken] = useState<string>('');
     const router = useRouter();
@@ -31,44 +29,37 @@ const Signup = () => {
         };
     }, []);
 
-    const handleSignup = async () => {
-        if (password !== confirmPassword) {
-            setError('비밀번호가 일치하지 않습니다.');
+    const handleFindId = async () => {
+        if (!email) {
+            setError('이메일을 입력하세요.');
             return;
         }
 
         try {
-            const response = await fetch('/api/signup', {
+            const response = await fetch('/api/find-id', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ userId, password, email, turnstileToken })
+                body: JSON.stringify({ email, turnstileToken }),
             });
+
             const data = await response.json();
             if (data.success) {
-                alert('회원가입이 완료되었습니다.');
-                router.push('/');
+                setUserId(data.userId);
+                setError('');
             } else {
                 setError(data.message);
+                setUserId('');
             }
         } catch (error) {
-            setError('회원가입 중 오류가 발생했습니다.');
+            setError('아이디 찾기 중 오류가 발생했습니다.');
+            setUserId('');
         }
     };
 
     const handleBack = () => {
         router.push('/');
-    };
-
-    const handleUserIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        const regex = /^[a-zA-Z0-9]*$/;
-        if (regex.test(value)) {
-            setUserId(value);
-        } else {
-            setError('ID는 영어와 숫자만 포함할 수 있습니다.');
-        }
     };
 
     const backgroundImageUrl = process.env.NEXT_PUBLIC_AVATAR_BASE_URL;
@@ -85,7 +76,7 @@ const Signup = () => {
                     <div
                         className="my-8 font-bold typography-20 text-secondary"
                         style={{
-                            fontSize:"32px",
+                            fontSize: "32px",
                             color: '#4299e1',
                             transition: 'color 0.3s ease, transform 0.2s ease'
                         }}
@@ -100,60 +91,26 @@ const Signup = () => {
                             e.currentTarget.style.transform = 'scale(1)';
                         }}
                     >
-                        회원가입
+                        아이디 찾기
                     </div>
 
                     <br/><br/>
-                    <div className="my-8 text-black font-bold">
-                        <p>회원가입 시 안내 조항:</p><br/>
-                        <ul className="list-disc list-inside">
-                            <li>비밀번호 보호: 회원님의 계정 비밀번호는 암호화되어 안전하게 보호됩니다.</li>
-                            <li>채팅 로그 저장: 계정으로 로그인 시 채팅 로그가 저장됩니다.</li>
-                            <li>채팅 로그 불러오기: 로그인 시 선택한 홀로멤과의 채팅 로그를 불러올 수 있습니다.</li>
-                            <li>계정 삭제: 계정 삭제 시 해당 계정의 모든 데이터는 데이터베이스에서 완전히 삭제되며, 복구할 수 없습니다.</li>
-                            <li>아이디 / 비밀번호 찾기: 이메일을 입력 시 해당 이메일로 아이디와 비밀번호 찾기를 사용 할 수 있습니다.</li>
-                            <li>회원 특권: 대화에 IBM 감정분석 시스템이 추가되며 GPT4o를 사용 할 수 있습니다.</li>
-                            <br/>
-                        </ul>
-                    </div>
-
-                    <div className="my-8 text-black font-bold">아이디와 비밀번호를 입력 해 주세요.</div>
-
+                    <div className="my-8 text-black font-bold">이메일을 입력해 주세요.</div>
+                    <div className="my-8 text-red-600">회원 가입 시 이메일을 입력하지 않은 경우 사용 할 수 없습니다.</div>
                     <div className="my-24">
                         <input
-                            type="text"
-                            placeholder="ID"
-                            value={userId}
-                            onChange={handleUserIdChange}
-                            className="my-4 px-16 py-8 w-full h-40 bg-surface3 hover:bg-surface3-hover rounded-4 text-ellipsis"
-                        />
-                        <input
-                            type="password"
-                            placeholder="비밀번호"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="my-4 px-16 py-8 w-full h-40 bg-surface3 hover:bg-surface3-hover rounded-4 text-ellipsis"
-                        />
-                        <input
-                            type="password"
-                            placeholder="비밀번호 확인"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="my-4 px-16 py-8 w-full h-40 bg-surface3 hover:bg-surface3-hover rounded-4 text-ellipsis"
-                        />
-                        <input
                             type="email"
-                            placeholder="이메일 (미입력시 아이디, 비밀번호 찾기가 제한됩니다.)"
+                            placeholder="이메일"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="my-4 px-16 py-8 w-full h-40 bg-surface3 hover:bg-surface3-hover rounded-4 text-ellipsis"
                         />
                         <div id="turnstile-widget" className="my-4"></div>
                         {error && <div className="my-4 text-red-600">{error}</div>}
-                        <br />
-                        <br />
+                        {userId && <div className="my-4 text-green-600">아이디: {userId}</div>}
+                        <br/><br/>
                         <button
-                            onClick={handleSignup}
+                            onClick={handleFindId}
                             className="font-bold text-white px-24 py-8 rounded-oval"
                             style={{
                                 backgroundColor: '#4299e1',
@@ -172,10 +129,9 @@ const Signup = () => {
                             }}
                             disabled={!turnstileToken}
                         >
-                            회원가입
+                            아이디 찾기
                         </button>
-                        <br />
-                        <br />
+                        <br/><br/>
                         <button
                             onClick={handleBack}
                             className="font-bold text-white px-24 py-8 rounded-oval"
@@ -204,4 +160,4 @@ const Signup = () => {
     );
 };
 
-export default Signup;
+export default FindId;

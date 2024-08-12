@@ -208,6 +208,14 @@ export const Introduction: React.FC<Props> = ({
         }
     };
 
+    const handleFindId = () => {
+        router.push('/find-id'); // 아이디 찾기 페이지로 이동
+    };
+
+    const handleFindPassword = () => {
+        router.push('/find-password'); // 비밀번호 찾기 페이지로 이동
+    };
+
     const backgroundImageUrl = process.env.NEXT_PUBLIC_AVATAR_BASE_URL;
 
     const divStyle = {
@@ -248,6 +256,8 @@ export const Introduction: React.FC<Props> = ({
                         @pixiv/three-vrm은 3D 모델을 표시하고 조작하는 데 사용되었습니다. <br/> tts 모델은 rvc 모델을 바탕으로 8천개의 음성을 해당 멤버의 목소리로
                         딥러닝 시킨 후 vits 를 사용하여 tts 작업을 하였습니다.
                         <br/> 또한, 음성인식은 각 인터넷 브라우저의 음성인식 기능을 사용하므로 브라우저마다 성능이 다를 수 있습니다.
+                        <br/><br/>
+                        <Link url={"https://www.ibm.com/kr-ko/products/natural-language-understanding"} label={"IBM Watson Natural Language Understanding"}/> &nbsp; : 회원을 대상으로 대화를 분석하여 감정을 수치화하여 대화에 사용하도록 합니다.
                         <br/><br/>
                         <Link url={"https://openai.com/index/openai-api/"} label={"Open ai API"}/> &nbsp; : 인격은 chatGPT를
                         이용하여 부여하였습니다. 또한 개발자의 비용 부담을 줄이기 위해 다음과 같이 모델을 세분화했습니다.
@@ -398,7 +408,52 @@ export const Introduction: React.FC<Props> = ({
                         ID 삭제하기
                     </button>
                 </div>
-
+                <div className="my-24">
+                    <button
+                        onClick={handleFindId}
+                        className="font-bold text-white px-24 py-8 rounded-oval"
+                        style={{
+                            backgroundColor: '#ECC94B', // 노란색 배경
+                            color: 'white',
+                            transition: 'background-color 0.3s ease, transform 0.2s ease'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#D69E2E'}  // hover 색상
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#ECC94B'}  // 기본 배경색
+                        onMouseDown={(e) => {
+                            e.currentTarget.style.backgroundColor = '#B7791F';  // active 색상
+                            e.currentTarget.style.transform = 'scale(0.95)';
+                        }}
+                        onMouseUp={(e) => {
+                            e.currentTarget.style.backgroundColor = '#D69E2E';  // hover 색상
+                            e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                    >
+                        아이디 찾기
+                    </button>
+                </div>
+                <div className="my-24">
+                    <button
+                        onClick={handleFindPassword}
+                        className="font-bold text-white px-24 py-8 rounded-oval"
+                        style={{
+                            backgroundColor: '#ECC94B', // 노란색 배경
+                            color: 'white',
+                            transition: 'background-color 0.3s ease, transform 0.2s ease'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#D69E2E'}  // hover 색상
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#ECC94B'}  // 기본 배경색
+                        onMouseDown={(e) => {
+                            e.currentTarget.style.backgroundColor = '#B7791F';  // active 색상
+                            e.currentTarget.style.transform = 'scale(0.95)';
+                        }}
+                        onMouseUp={(e) => {
+                            e.currentTarget.style.backgroundColor = '#D69E2E';  // hover 색상
+                            e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                    >
+                        비밀번호 찾기
+                    </button>
+                </div>
             </div>
         </div>
     ) : null;

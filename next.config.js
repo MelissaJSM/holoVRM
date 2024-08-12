@@ -19,6 +19,8 @@ const nextConfig = {
     CLOUDFLARE_TURNSTILE_SECRET_KEY: process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY,
     SERVER_URL: process.env.SERVER_URL,
     JWT_SECRET: process.env.JWT_SECRET, // JWT_SECRET 추가
+    IBM_API_KEY:process.env.IBM_API_KEY,
+    IBM_SITE_URL:process.env.IBM_SITE_URL,
   },
 };
 
