@@ -234,7 +234,7 @@ export default function Home() {
     /////////////////////////////////////////////////
 
     const getGpt4Response = async (messages: Message[], openAiKey: string, isSession: boolean) => {
-        const model = isSession ? "gpt-4o-mini" : "gpt-4o";
+        const model = isSession ? "gpt-4o-mini" : "gpt-4o-2024-08-06";
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: {

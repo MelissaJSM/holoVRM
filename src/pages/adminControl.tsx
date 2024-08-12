@@ -449,7 +449,7 @@ const AdminControl = () => {
                         <div className="admin-avatar-image" style={{ backgroundImage: `url('/iconLucia.png')` }} />
                     </div>
                     <div className="admin-title">Admin : MelissaJ</div>
-                    <div className="admin-email">jsm930602@gmail.com</div>
+                    <div className="admin-email">holovrm@gmail.com</div>
                     <div className="admin-details">사용방식: WEB</div>
                     <div className="admin-details">SSL: CloudFlare SSL</div>
                     <div className="admin-details">도메인: https://www.holovrm.com</div>
