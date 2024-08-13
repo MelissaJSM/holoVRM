@@ -59,6 +59,10 @@ export const MessageInput = ({
           Reimagined by&nbsp;
           <a target="_blank" href="https://github.com/MelissaJSM/holoVRM.git" className="underline">
             MelissaJ
+          </a>,&nbsp;
+          Contact me&nbsp;
+          <a href="mailto:holovrm@gmail.com" className="underline">
+            Email
           </a>
         </div>
       </div>

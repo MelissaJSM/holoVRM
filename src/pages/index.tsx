@@ -36,6 +36,8 @@ export default function Home() {
     const [showIntro, setShowIntro] = useState(true);
     const [, setShowSettings] = useState(false);
     const [showAssistantMessage, setShowAssistantMessage] = useState(true);
+    const [isEmotionAnalysisEnabled, setIsEmotionAnalysisEnabled] = useState(true);
+    const isSessionLogin = userId.startsWith("session_"); // 토글버튼 온오프를 위한 작업
 
     const easterEgg = `
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -90,47 +92,36 @@ export default function Home() {
 
     //이게 불러오기란건데
     const loadParams = async (inputUserId: string) => {
+        if (!inputUserId) return; // userId가 없을 때 호출 방지
 
-        console.log("loadparams 진입");
+        console.log("loadParams 시작");
 
-        if (userId.startsWith("session_")) {
-            console.log("loadparams 세션 진입");
-            let character_degree = sessionStorage.getItem('character_degree');
-            const response = await fetch(`/api/chat-session?character_degree=${character_degree}`);
-            const data = await response.json();
-
-            if (data.success) {
-                console.log("loadparams 성공");
-
-                const logs = data.chatLogs.map((log: { role: string; message: string }) => ({
-                    role: log.role,
-                    content: log.message, // message를 content로 변환
-                }));
-
-                setChatLog(logs);
+        if (inputUserId.startsWith("session_")) {
+            const character_degree = sessionStorage.getItem('character_degree');
+            if (character_degree) {
+                const response = await fetch(`/api/chat-session?character_degree=${character_degree}`);
+                const data = await response.json();
+                if (data.success) {
+                    setChatLog(data.chatLogs.map((log: { role: any; message: any; }) => ({
+                        role: log.role,
+                        content: log.message,
+                    })));
+                }
+            }
+        } else {
+            const character_degree = sessionStorage.getItem('character_degree');
+            if (character_degree) {
+                const response = await fetch(`/api/chat?userId=${inputUserId}&character_degree=${character_degree}`);
+                const data = await response.json();
+                if (data.success) {
+                    setChatLog(data.chatLogs.map((log: { role: any; message: any; }) => ({
+                        role: log.role,
+                        content: log.message,
+                    })));
+                }
             }
         }
-        else {
-            console.log("loadparams 일반 진입");
-            let character_degree = sessionStorage.getItem('character_degree');
-            const response = await fetch('/api/chat?userId=' + inputUserId + "&character_degree=" + character_degree);
-            const data = await response.json();
-            if (data.success) {
-                console.log("loadparams 성공");
-
-                const logs = data.chatLogs.map((log: { role: string; message: string }) => ({
-                    role: log.role,
-                    content: log.message // message를 content로 변환
-                }));
-                setChatLog(logs);
-            }
-        }
-
-
-
-
     };
-
 
     const loadDefaultParams = () => {
         setSystemPrompt(SYSTEM_PROMPT);
@@ -141,16 +132,15 @@ export default function Home() {
     };
 
     useEffect(() => {
-        if (userId) {
-            if (userId.startsWith("session_")) {
-                loadDefaultParams();
-            } else {
+        if (userId && !showIntro) {
+            console.log("useEffect triggered with userId:", userId);
+            if (!userId.startsWith("session_")) {
                 loadParams(userId);
+            } else {
+                loadDefaultParams();
             }
         }
-    }, [userId]);
-
-
+    }, [userId, showIntro]); // 의존성을 최소화하여 불필요한 호출 방지
 
     const setCharacter = (character: keyof CharacterPrompts | "default") => {
         if (character === "default") {
@@ -160,7 +150,7 @@ export default function Home() {
             console.log("Character set to default");
         } else {
             const backgroundImageUrl = process.env.NEXT_PUBLIC_AVATAR_BASE_URL;
-            document.body.style.backgroundImage = `url(${backgroundImageUrl}background/${character}.png)`; // 여기 안쓰는거아냐?
+            document.body.style.backgroundImage = `url(${backgroundImageUrl}background/${character}.png)`;
             setCharacterVoiceParam((prev) => ({ ...prev, voiceId: character }));
             setSystemPrompt(characterPrompts[character]);
             console.log("Character set to:", character, "Prompt:", characterPrompts[character]);
@@ -200,6 +190,7 @@ export default function Home() {
         },
         [viewer]
     );
+
     //////////////////////////////////////////////////
     const getEmoteResponse = async (text: string): Promise<{ [key: string]: number } | { error: string } & { translatedText?: string }> => {
         try {
@@ -229,7 +220,6 @@ export default function Home() {
             }
         }
     };
-
 
     /////////////////////////////////////////////////
 
@@ -266,43 +256,37 @@ export default function Home() {
         return summaryResponse;
     };
 
-
-
     const handleSendChat = useCallback(
         async (text: string) => {
 
             setChatProcessing(true);
             let emoteText = '';
 
-            if(userId.startsWith("session_")){
+            console.log("토글 모드 현재 상태 : " + isEmotionAnalysisEnabled);
+            // 세션 로그인 상태일때
+            if(userId.startsWith("session_") || !isEmotionAnalysisEnabled){
                 emoteText="";
-
-                //여기에 비활성화 상태라는 기능을 추가하도록 한다.
-
             }
             else{
-                // 여기서 text 변수를 사용해서 값을 이용해야겠네.
                 const emoteResult = await getEmoteResponse(text);
                 if ('error' in emoteResult) {
                     console.error('Error:', emoteResult.error);
-                    //여기에 비활성화 상태라는 기능을 추가하도록 한다.
                 } else {
                     console.log('Emotion analysis result:', emoteResult);
-                    emoteText = `아래 설명하는 감정 수치는 지금 대화를 IBM Watson Natural Language Understanding을 통해 분석한 것입니다.
-                감정 수치는 0에서 1.0까지의 범위를 가지며, 값이 1.0에 가까울수록 해당 감정이 강하다는 것을 의미합니다.
-                이 자료를 참고하여 사용자의 감정 상태를 이해하고 대화에 반영해 주시기 바랍니다.
-                감정 수치: ${JSON.stringify(emoteResult)})`;
+                    emoteText =
+                        `\n아래는 사용자가 방금 입력한 대화를 IBM Watson의 감정 분석 시스템을 통해 분석한 결과입니다. 각 감정은 0에서 1.0까지의 값으로 표현되며, 값이 높을수록 해당 감정이 강하게 나타난다는 것을 의미합니다.\n
+                        예를 들어, 기쁨의 값이 높다면 사용자가 기쁨을 느끼고 있다는 뜻이고, 슬픔의 값이 높다면 사용자가 슬픔을 느끼고 있을 가능성이 큽니다.\n
+                        감정 분석 결과: ${JSON.stringify(emoteResult)}\n
+                        이 정보를 바탕으로, 현재 사용자의 감정 상태를 이해하고 보다 적절한 대응을 부탁드립니다.`;
                 }
             }
-
-
 
             const newMessage: Message = { role: "user", content: text };
 
             if (newMessage == null) return;
 
             let messageLog: Message[] = [
-                { role: "system", content: systemPrompt },
+                { role: "system", content: systemPrompt + emoteText },
             ];
 
             if (summary) {
@@ -323,7 +307,7 @@ export default function Home() {
             try {
                 const gptMessages = messageLog.map((msg, index) => {
                     if (index === messageLog.length - 1) {
-                        return { ...msg, content: msg.content + emoteText };
+                        return { ...msg, content: msg.content};
                     }
                     return msg;
                 });
@@ -356,6 +340,10 @@ export default function Home() {
                     character = "koyori";
                 } else if ((characterVoiceParam.voiceId).includes("pekomama")) {
                     character = "pekomama";
+                } else if ((characterVoiceParam.voiceId).includes("roboco")) {
+                    character = "roboco";
+                } else if ((characterVoiceParam.voiceId).includes("irys")) {
+                    character = "irys";
                 }
                 else {
                     character = characterVoiceParam.voiceId || "miko";
@@ -363,7 +351,6 @@ export default function Home() {
 
                 const ttsEndpoint = process.env.NEXT_PUBLIC_TTS_SERVER;
                 const response = await fetch(`${ttsEndpoint}/tts`, {
-                    //const response = await fetch(`http://localhost:3545/tts`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -478,7 +465,7 @@ export default function Home() {
                 setChatProcessing(false);
             }
         },
-        [chatLog, characterVoiceParam, handleSpeakAi, koeiroParam, openAiKey, summary, systemPrompt, userId]
+        [chatLog, characterVoiceParam, handleSpeakAi, koeiroParam, openAiKey, summary, systemPrompt, userId, isEmotionAnalysisEnabled]
     );
 
     return (
@@ -498,6 +485,9 @@ export default function Home() {
                     <MessageInputContainer
                         isChatProcessing={chatProcessing}
                         onChatProcessStart={handleSendChat}
+                        onEmotionAnalysisToggle={setIsEmotionAnalysisEnabled}
+                        isEmotionAnalysisEnabled={isEmotionAnalysisEnabled}
+                        shouldShowEmotionToggle={!isSessionLogin} // 세션 로그인 상태가 아닐 때만 버튼을 보여줌
                     />
                     <Menu
                         openAiKey={openAiKey}

@@ -7,11 +7,23 @@ const Signup = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const [turnstileToken, setTurnstileToken] = useState<string>('');
     const router = useRouter();
 
     useEffect(() => {
+        loadTurnstile();
+
+        return () => {
+            removeTurnstile();
+        };
+    }, []);
+
+    const loadTurnstile = () => {
+        removeTurnstile();  // 기존 Turnstile 위젯 삭제
+
         const script = document.createElement('script');
+        script.id = 'turnstile-script';
         script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
         script.async = true;
         script.onload = () => {
@@ -25,15 +37,50 @@ const Signup = () => {
             }
         };
         document.body.appendChild(script);
+    };
 
-        return () => {
+    const removeTurnstile = () => {
+        const widget = document.getElementById('turnstile-widget');
+        if (widget) {
+            widget.innerHTML = '';  // 기존 Turnstile 위젯 제거
+        }
+
+        const script = document.getElementById('turnstile-script');
+        if (script) {
             document.body.removeChild(script);
-        };
-    }, []);
+        }
+    };
 
     const handleSignup = async () => {
+        if (loading) return;
+        setLoading(true);
+
+        // 입력 필드 공란 체크
+        if (!userId) {
+            setError('아이디를 입력해 주세요.');
+            setLoading(false);
+            return;
+        }
+        if (!password) {
+            setError('비밀번호를 입력해 주세요.');
+            setLoading(false);
+            return;
+        }
+        if (!confirmPassword) {
+            setError('비밀번호 확인을 입력해 주세요.');
+            setLoading(false);
+            return;
+        }
+
         if (password !== confirmPassword) {
             setError('비밀번호가 일치하지 않습니다.');
+            setLoading(false);
+            return;
+        }
+
+        if (!turnstileToken) {
+            setError('Turnstile 체크를 완료해주세요.');
+            setLoading(false);
             return;
         }
 
@@ -51,9 +98,13 @@ const Signup = () => {
                 router.push('/');
             } else {
                 setError(data.message);
+                setLoading(false);
+                loadTurnstile();  // 실패 시 새로 Turnstile 위젯 생성
             }
         } catch (error) {
             setError('회원가입 중 오류가 발생했습니다.');
+            setLoading(false);
+            loadTurnstile();  // 오류 발생 시 새로 Turnstile 위젯 생성
         }
     };
 
@@ -170,7 +221,7 @@ const Signup = () => {
                                 e.currentTarget.style.backgroundColor = '#3182ce';
                                 e.currentTarget.style.transform = 'scale(1)';
                             }}
-                            disabled={!turnstileToken}
+                            disabled={loading}
                         >
                             회원가입
                         </button>

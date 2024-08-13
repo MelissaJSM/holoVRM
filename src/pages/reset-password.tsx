@@ -11,7 +11,18 @@ const ResetPassword = () => {
     const { token } = router.query;
 
     useEffect(() => {
+        loadTurnstile();
+
+        return () => {
+            removeTurnstile();
+        };
+    }, []);
+
+    const loadTurnstile = () => {
+        removeTurnstile();  // 기존 Turnstile 위젯 삭제
+
         const script = document.createElement('script');
+        script.id = 'turnstile-script';
         script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
         script.async = true;
         script.onload = () => {
@@ -25,15 +36,33 @@ const ResetPassword = () => {
             }
         };
         document.body.appendChild(script);
+    };
 
-        return () => {
+    const removeTurnstile = () => {
+        const widget = document.getElementById('turnstile-widget');
+        if (widget) {
+            widget.innerHTML = '';  // 기존 Turnstile 위젯 제거
+        }
+
+        const script = document.getElementById('turnstile-script');
+        if (script) {
             document.body.removeChild(script);
-        };
-    }, []);
+        }
+    };
 
     const handleResetPassword = async () => {
+        if (!password || !confirmPassword) {
+            setError('모든 필드를 입력하세요.');
+            return;
+        }
+
         if (password !== confirmPassword) {
             setError('비밀번호가 일치하지 않습니다.');
+            return;
+        }
+
+        if (!turnstileToken) {
+            setError('Turnstile 체크를 완료해주세요.');
             return;
         }
 
@@ -53,10 +82,12 @@ const ResetPassword = () => {
             } else {
                 setError(data.message);
                 setMessage('');
+                loadTurnstile();  // 실패 시 새로 Turnstile 위젯 생성
             }
         } catch (error) {
             setError('비밀번호 재설정 중 오류가 발생했습니다.');
             setMessage('');
+            loadTurnstile();  // 오류 발생 시 새로 Turnstile 위젯 생성
         }
     };
 
