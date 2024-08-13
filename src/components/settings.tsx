@@ -79,7 +79,7 @@ export const Settings = ({
     }, [userId, onChangeCharacterVoice, onChangeSystemPrompt, viewer]);
 
     useEffect(() => {
-        console.log('초기 설정 캐릭터:', selectedCharacter);
+        //console.log('초기 설정 캐릭터:', selectedCharacter);
 
         if (selectedCharacter.includes("miko")) {
             selectedCharacter = "miko_1st";
@@ -103,7 +103,7 @@ export const Settings = ({
 
 
         // 이걸 chat.ts 에서 쓰도록 하면되는데...
-        console.log('중복 필터 캐릭터:', selectedCharacter);
+        //console.log('중복 필터 캐릭터:', selectedCharacter);
 
         sessionStorage.setItem('character_degree', selectedCharacter);
 
@@ -125,7 +125,7 @@ export const Settings = ({
     const handleCharacterChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedValue = event.target.value as keyof CharacterPrompts;
         setSelectedCharacter(selectedValue);
-        console.log('캐릭터 변경:', selectedValue);
+        //console.log('캐릭터 변경:', selectedValue);
 
         if (!selectedValue.includes("default")) {
             window.dispatchEvent(new CustomEvent("changeAvatar", {detail: selectedValue}));

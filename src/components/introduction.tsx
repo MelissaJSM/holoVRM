@@ -60,7 +60,7 @@ export const Introduction: React.FC<Props> = ({
     const handleStart = async () => {
         if (loading) return;
         setLoading(true);
-        console.log('handleStart called');
+        //console.log('handleStart called');
 
         if (!turnstileToken) {
             setError('Turnstile 체크를 완료해주세요.');
@@ -79,7 +79,7 @@ export const Introduction: React.FC<Props> = ({
                 });
                 const data = await response.json();
                 if (data.success) {
-                    console.log('Login successful');
+                    //console.log('Login successful');
                     if (userId === 'admin') {
                         router.push('/login');
                     } else {
@@ -87,7 +87,7 @@ export const Introduction: React.FC<Props> = ({
                         onSubmitUserId(userId, false, data.lastCharacter); // isSession을 false로 전달
                         setOpened(false);
 
-                        console.log('Recording login attempt');
+                        //console.log('Recording login attempt');
                         await fetch('/api/recordLoginAttempt', {
                             method: 'POST',
                             headers: {
@@ -95,7 +95,7 @@ export const Introduction: React.FC<Props> = ({
                             },
                             body: JSON.stringify({ type: 'user', userId: userId }),
                         }).then(() => {
-                            console.log('Login attempt recorded');
+                            //console.log('Login attempt recorded');
                             setLoading(false);
                         }).catch(() => {
                             setLoading(false);
@@ -129,7 +129,7 @@ export const Introduction: React.FC<Props> = ({
         onResetChatLog();
         onSubmitUserId(sessionId, true); // isSession을 true로 전달
 
-        console.log('Recording session login attempt');
+        //console.log('Recording session login attempt');
         await fetch('/api/recordLoginAttempt', {
             method: 'POST',
             headers: {
@@ -140,7 +140,7 @@ export const Introduction: React.FC<Props> = ({
             if (!data.success) {
                 console.error('Error recording session login attempt:', data.message);
             } else {
-                console.log('Session login attempt recorded successfully');
+                //console.log('Session login attempt recorded successfully');
             }
             setLoading(false);
         }).catch(() => {

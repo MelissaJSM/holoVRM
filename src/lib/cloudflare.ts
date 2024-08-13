@@ -57,14 +57,14 @@ export async function addIPAccessRule(ip_address: string, mode: 'whitelist' | 'b
     });
 
     const responseData = await parseJSON<IPAccessRule>(response);
-    console.log('Cloudflare response data:', responseData); // 응답 데이터 로그 추가
+    //console.log('Cloudflare response data:', responseData); // 응답 데이터 로그 추가
     if (!responseData.success) {
         throw new Error(`Failed to add IP access rule: ${JSON.stringify(responseData.errors)}`);
     }
 }
 
 export async function removeIPAccessRule(ip_address: string): Promise<void> {
-    console.log('Trying to remove IP address:', ip_address); // IP 주소 로그 추가
+    //console.log('Trying to remove IP address:', ip_address); // IP 주소 로그 추가
 
     // 먼저 IP 차단 규칙 ID를 가져와야 합니다.
     const listResponse = await fetch(`https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/firewall/access_rules/rules?configuration.value=${ip_address}`, {
@@ -73,13 +73,13 @@ export async function removeIPAccessRule(ip_address: string): Promise<void> {
     });
 
     const listData = await parseJSON<IPAccessRule[]>(listResponse);
-    console.log('List Data:', listData); // 응답 데이터 로그 추가
+    //console.log('List Data:', listData); // 응답 데이터 로그 추가
     if (!listData.success) {
         throw new Error(`Failed to list IP access rules: ${JSON.stringify(listData.errors)}`);
     }
 
     const rule = listData.result.find(r => r.configuration.value === ip_address);
-    console.log('Found rule:', rule); // 찾은 규칙 로그 추가
+    //console.log('Found rule:', rule); // 찾은 규칙 로그 추가
     if (!rule) {
         throw new Error('IP address not found in access rules');
     }
@@ -92,7 +92,7 @@ export async function removeIPAccessRule(ip_address: string): Promise<void> {
     });
 
     const deleteData = await parseJSON<null>(deleteResponse);
-    console.log('Delete Data:', deleteData); // 응답 데이터 로그 추가
+    //console.log('Delete Data:', deleteData); // 응답 데이터 로그 추가
     if (!deleteData.success) {
         throw new Error(`Failed to delete IP access rule: ${JSON.stringify(deleteData.errors)}`);
     }
@@ -105,7 +105,7 @@ export async function getBannedIPs(): Promise<IPAccessRule[]> {
     });
 
     const data = await parseJSON<IPAccessRule[]>(response);
-    console.log('Get Banned IPs Data:', data); // 응답 데이터 로그 추가
+    //console.log('Get Banned IPs Data:', data); // 응답 데이터 로그 추가
     if (!data.success) {
         throw new Error(`Failed to fetch banned IPs: ${JSON.stringify(data.errors)}`);
     }

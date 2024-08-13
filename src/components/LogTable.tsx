@@ -15,7 +15,7 @@ interface LogTableProps {
 const LogTable: React.FC<LogTableProps> = ({ logs, onBanIPSuccess }) => {
     const handleBanIP = async (ip_address: string) => {
         try {
-            console.log('Ban IP:', ip_address); // 로그 추가
+            //console.log('Ban IP:', ip_address); // 로그 추가
             const response = await fetchWithToken('/api/admin/banIP', {
                 method: 'POST',
                 body: JSON.stringify({ ip_address }),

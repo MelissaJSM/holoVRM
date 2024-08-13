@@ -24,7 +24,7 @@ export default async function handler(
     if (req.method === 'POST') {
       // 대화 기록 저장
       const { userId, role, message, character_degree } = req.body;
-      console.log("post 로 들어온 character_degree 값 : " + character_degree);
+      //console.log("post 로 들어온 character_degree 값 : " + character_degree);
       await connection.execute(
           'INSERT INTO chat_logs (user_id, role, message, character_degree) VALUES (?, ?, ?, ?)',
           [userId, role, message, character_degree]
@@ -33,7 +33,7 @@ export default async function handler(
     } else if (req.method === 'GET') {
       // 대화 기록 불러오기
       const { userId, character_degree } = req.query;
-      console.log("get 로 들어온 character_degree 값 : " + character_degree);
+      //console.log("get 로 들어온 character_degree 값 : " + character_degree);
       const [rows]: [any[], any] = await connection.execute(
           'SELECT role, message, timestamp FROM chat_logs WHERE user_id = ? AND character_degree = ? ORDER BY timestamp ASC',
           [userId, character_degree]
@@ -42,7 +42,7 @@ export default async function handler(
     } else if (req.method === 'DELETE') {
       // 대화 기록 삭제
       const { userId, character_degree } = req.query;
-      console.log("get 로 들어온 character_degree 삭제 값 : " + character_degree);
+      //console.log("get 로 들어온 character_degree 삭제 값 : " + character_degree);
       await connection.execute(
           'DELETE FROM chat_logs WHERE user_id = ? AND character_degree = ?',
           [userId, character_degree]

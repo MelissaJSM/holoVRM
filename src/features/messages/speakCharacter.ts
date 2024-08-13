@@ -23,7 +23,7 @@ const createSpeakCharacter = () => {
       }
 
       if (!audioBuffer) {
-        console.log("audioBuffer is not set");
+        //console.log("audioBuffer is not set");
         return null;
       }
 

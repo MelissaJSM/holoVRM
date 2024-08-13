@@ -23,7 +23,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     try {
-        console.log(`Fetching total stats with unit: ${unit}`);
+        //console.log(`Fetching total stats with unit: ${unit}`);
         const userLogins = await query(
             `SELECT DATE_FORMAT(timestamp, ?) as date, COUNT(*) as count
              FROM user_login_attempts
@@ -66,7 +66,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         totalStats.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-        console.log('Fetched total stats:', totalStats);
+        //console.log('Fetched total stats:', totalStats);
         res.status(200).json(totalStats);
     } catch (error) {
         console.error('Error fetching total stats:', error);

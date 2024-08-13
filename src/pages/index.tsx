@@ -61,7 +61,7 @@ export default function Home() {
     "페코미코는 존재하니 믿을지어다. - 멜리사J"`;
 
     useEffect(() => {
-        console.log(easterEgg);
+        //console.log(easterEgg);
     }, []);
 
     const resetChatLog = useCallback(() => {
@@ -94,7 +94,7 @@ export default function Home() {
     const loadParams = async (inputUserId: string) => {
         if (!inputUserId) return; // userId가 없을 때 호출 방지
 
-        console.log("loadParams 시작");
+        //console.log("loadParams 시작");
 
         if (inputUserId.startsWith("session_")) {
             const character_degree = sessionStorage.getItem('character_degree');
@@ -133,7 +133,7 @@ export default function Home() {
 
     useEffect(() => {
         if (userId && !showIntro) {
-            console.log("useEffect triggered with userId:", userId);
+            //console.log("useEffect triggered with userId:", userId);
             if (!userId.startsWith("session_")) {
                 loadParams(userId);
             } else {
@@ -147,13 +147,13 @@ export default function Home() {
             document.body.style.backgroundImage = "";
             setCharacterVoiceParam((prev) => ({ ...prev, voiceId: "" }));
             setSystemPrompt(SYSTEM_PROMPT);
-            console.log("Character set to default");
+            //console.log("Character set to default");
         } else {
             const backgroundImageUrl = process.env.NEXT_PUBLIC_AVATAR_BASE_URL;
             document.body.style.backgroundImage = `url(${backgroundImageUrl}background/${character}.png)`;
             setCharacterVoiceParam((prev) => ({ ...prev, voiceId: character }));
             setSystemPrompt(characterPrompts[character]);
-            console.log("Character set to:", character, "Prompt:", characterPrompts[character]);
+            //console.log("Character set to:", character, "Prompt:", characterPrompts[character]);
         }
 
         if (!character.includes("default")) {
@@ -186,7 +186,7 @@ export default function Home() {
                     setShowAssistantMessage(false);
                 }, 5000);
             }, audioBuffer);
-            console.log('speak character');
+            //console.log('speak character');
         },
         [viewer]
     );
@@ -209,7 +209,7 @@ export default function Home() {
             }
 
             const data = await response.json();
-            console.log(`Translated text: ${data.translatedText}`);
+            //console.log(`Translated text: ${data.translatedText}`);
             return data;
         } catch (error) {
             console.error('Error:', error);
@@ -238,7 +238,7 @@ export default function Home() {
             })
         });
         const data = await response.json();
-        console.log("OpenAI Response:", data);
+        //console.log("OpenAI Response:", data);
         if (data.choices && data.choices.length > 0) {
             return data.choices[0].message.content;
         }
@@ -252,7 +252,7 @@ export default function Home() {
         };
         const summaryMessages = [summaryPrompt, ...recentMessages];
         const summaryResponse = await getGpt4Response(summaryMessages, openAiKey, isSession); // 요약용
-        console.log("Summary Response:", summaryResponse);
+        //console.log("Summary Response:", summaryResponse);
         return summaryResponse;
     };
 
@@ -262,7 +262,7 @@ export default function Home() {
             setChatProcessing(true);
             let emoteText = '';
 
-            console.log("토글 모드 현재 상태 : " + isEmotionAnalysisEnabled);
+            //console.log("토글 모드 현재 상태 : " + isEmotionAnalysisEnabled);
             // 세션 로그인 상태일때
             if(userId.startsWith("session_") || !isEmotionAnalysisEnabled){
                 emoteText="";
@@ -272,7 +272,7 @@ export default function Home() {
                 if ('error' in emoteResult) {
                     console.error('Error:', emoteResult.error);
                 } else {
-                    console.log('Emotion analysis result:', emoteResult);
+                    //console.log('Emotion analysis result:', emoteResult);
                     emoteText =
                         `\n아래는 사용자가 방금 입력한 대화를 IBM Watson의 감정 분석 시스템을 통해 분석한 결과입니다. 각 감정은 0에서 1.0까지의 값으로 표현되며, 값이 높을수록 해당 감정이 강하게 나타난다는 것을 의미합니다.\n
                         예를 들어, 기쁨의 값이 높다면 사용자가 기쁨을 느끼고 있다는 뜻이고, 슬픔의 값이 높다면 사용자가 슬픔을 느끼고 있을 가능성이 큽니다.\n
@@ -312,7 +312,7 @@ export default function Home() {
                     return msg;
                 });
 
-                console.log("Sending messages to GPT:", gptMessages);
+                //console.log("Sending messages to GPT:", gptMessages);
 
                 const gptResponse = await getGpt4Response(gptMessages, openAiKey, userId.startsWith("session_")); // 대화용
 
@@ -336,6 +336,8 @@ export default function Home() {
                     character = "mio";
                 } else if ((characterVoiceParam.voiceId).includes("aqua")) {
                     character = "aqua";
+                } else if ((characterVoiceParam.voiceId).includes("pekora")) {
+                    character = "pekora";
                 } else if ((characterVoiceParam.voiceId).includes("koyori")) {
                     character = "koyori";
                 } else if ((characterVoiceParam.voiceId).includes("pekomama")) {

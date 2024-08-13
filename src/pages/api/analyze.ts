@@ -46,7 +46,7 @@ const translateText = async (text: string, targetLang: string): Promise<string> 
     const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=ko|${targetLang}`);
     const data = await response.json() as MyMemoryResponse;
     if (data.responseData) {
-        console.log(`Translated text: ${data.responseData.translatedText}`);
+        //console.log(`Translated text: ${data.responseData.translatedText}`);
         return data.responseData.translatedText;
     }
     throw new Error('Translation failed');

@@ -87,24 +87,24 @@ function handleTouchEvent(event, app, targetX, targetY, radius, rectWidth, rectH
     const x = ((event.clientX - rect.left) / rect.width) * app.screen.width;
     const y = ((event.clientY - rect.top) / rect.height) * app.screen.height;
 
-    console.log(`Clicked at: x=${x}, y=${y}`); // 클릭한 위치의 좌표를 콘솔에 출력
+    //console.log(`Clicked at: x=${x}, y=${y}`); // 클릭한 위치의 좌표를 콘솔에 출력
 
     if (touchType === 'head') {
         // 터치한 위치가 원 영역 내에 있는지 확인
         if (Math.hypot(x - targetX, y - targetY) <= radius) {
-            console.log("머리 터치 성공"); // 터치 성공 로그 추가
+            //console.log("머리 터치 성공"); // 터치 성공 로그 추가
             model.expression(); // 기본 애니메이션 재생
         } else {
-            console.log("머리 터치 실패"); // 터치 실패 로그 추가
+            //console.log("머리 터치 실패"); // 터치 실패 로그 추가
         }
     } else if (touchType === 'body') {
         // 터치한 위치가 사각형 영역 내에 있는지 확인
         if (x >= targetX - rectWidth / 2 && x <= targetX + rectWidth / 2 &&
             y >= targetY - rectHeight / 2 && y <= targetY + rectHeight / 2) {
-            console.log("바디 터치 성공"); // 터치 성공 로그 추가
+            //console.log("바디 터치 성공"); // 터치 성공 로그 추가
             model.motion("Taps"); // 기본 애니메이션 재생
         } else {
-            console.log("바디 터치 실패"); // 터치 실패 로그 추가
+            //console.log("바디 터치 실패"); // 터치 실패 로그 추가
         }
     }
 }

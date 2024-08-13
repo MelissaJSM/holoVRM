@@ -23,7 +23,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     try {
-        console.log(`Fetching session stats with unit: ${unit}`);
+        //console.log(`Fetching session stats with unit: ${unit}`);
         const results = await query(
             `SELECT DATE_FORMAT(timestamp, ?) as date, COUNT(*) as count
              FROM guest_login_attempts
@@ -31,7 +31,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
              ORDER BY date`,
             [groupByFormat]
         );
-        console.log(`Fetched session stats:`, results);
+        //console.log(`Fetched session stats:`, results);
         res.status(200).json(results);
     } catch (error) {
         console.error('Error fetching session stats:', error);

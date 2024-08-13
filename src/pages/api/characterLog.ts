@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { userId, sessionId, character, message } = req.body;
 
-    console.log('Received data:', { userId, sessionId, character, message }); // 요청 데이터 로그 출력
+    //console.log('Received data:', { userId, sessionId, character, message }); // 요청 데이터 로그 출력
 
     let connection;
     try {
@@ -58,16 +58,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 const authenticate = (handler: Function) => async (req: NextApiRequest, res: NextApiResponse) => {
     const { authorization } = req.headers;
 
-    console.log('Authorization header:', authorization); // 로그 추가
-    console.log('JWT_SECRET:', process.env.JWT_SECRET); // 환경 변수 로그 추가
+    //console.log('Authorization header:', authorization); // 로그 추가
+    //console.log('JWT_SECRET:', process.env.JWT_SECRET); // 환경 변수 로그 추가
 
     if (authorization) {
         const token = authorization.split(' ')[1];
-        console.log('Extracted token:', token); // 추출된 토큰 로그 추가
+        //console.log('Extracted token:', token); // 추출된 토큰 로그 추가
 
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-            console.log('Decoded token:', decoded); // 디코딩된 토큰 로그 추가
+            //console.log('Decoded token:', decoded); // 디코딩된 토큰 로그 추가
             (req as any).user = decoded;
         } catch (error) {
             console.error('JWT verification error 하지만 그래도 진행하도록 합니다. :', error); // JWT 오류 로그 추가

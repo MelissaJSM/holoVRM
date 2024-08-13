@@ -55,7 +55,7 @@ export const MessageInputContainer = ({
     }, [onChatProcessStart, userMessage]);
 
     const handleEmotionAnalysisToggle = () => {
-        console.log("버튼이 눌러졌습니다 : " + !isEmotionAnalysisEnabled);
+        //console.log("버튼이 눌러졌습니다 : " + !isEmotionAnalysisEnabled);
         onEmotionAnalysisToggle(!isEmotionAnalysisEnabled);
     };
 

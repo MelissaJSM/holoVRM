@@ -5,7 +5,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'POST') {
         const { type, userId } = req.body;
 
-        console.log(`Received login attempt: type=${type}, userId=${userId}`);
+        //console.log(`Received login attempt: type=${type}, userId=${userId}`);
 
         const connection = await mysql.createConnection({
             host: process.env.MYSQL_HOST,
@@ -17,10 +17,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
             if (type === 'user' && userId) {
                 await connection.execute('INSERT INTO user_login_attempts (user_id, timestamp) VALUES (?, NOW())', [userId]);
-                console.log(`Recorded login attempt for user: ${userId}`);
+                //console.log(`Recorded login attempt for user: ${userId}`);
             } else {
                 await connection.execute('INSERT INTO guest_login_attempts (timestamp) VALUES (NOW())');
-                console.log('Recorded guest login attempt');
+                //console.log('Recorded guest login attempt');
             }
             res.status(200).json({ success: true });
         } catch (error) {

@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         try {
             const normalizedIP = normalizeIPv6Address(ip_address); // IP 주소 형식 보정
-            console.log('Banning IP address:', normalizedIP);
+            //console.log('Banning IP address:', normalizedIP);
 
             // Cloudflare에 IP 차단 규칙 추가
             await addIPAccessRule(normalizedIP, 'block', 'Banned via API');

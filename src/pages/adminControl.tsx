@@ -257,7 +257,7 @@ const AdminControl = () => {
         if (endDate) url += `end=${endDate}&`;
         if (selectedCountry) url += `country=${selectedCountry}&`;
         if (searchIP) url += `ip=${searchIP}&`;
-        console.log('Fetching logs with URL:', url); // 디버그 로그 추가
+        //console.log('Fetching logs with URL:', url); // 디버그 로그 추가
         const response = await fetch(url);
         const filteredLogs = await response.json();
         setLogs(filteredLogs);
@@ -289,7 +289,7 @@ const AdminControl = () => {
             }
 
             const result = await response.json();
-            console.log('Unban result:', result); // 응답 데이터 로그 추가
+            //console.log('Unban result:', result); // 응답 데이터 로그 추가
             alert('차단 해제를 완료하였습니다');
             fetchBannedIPs(); // 차단된 IP 리스트를 갱신합니다.
         } catch (error) {

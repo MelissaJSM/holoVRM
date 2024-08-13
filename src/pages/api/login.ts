@@ -61,7 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         await connection.end();
 
-        console.log('로그인 성공:', userId, '마지막 캐릭터:', lastCharacter);
+        //console.log('로그인 성공:', userId, '마지막 캐릭터:', lastCharacter);
 
         return res.status(200).json({ success: true, token, lastCharacter, otpSetupRequired });
     } else {
