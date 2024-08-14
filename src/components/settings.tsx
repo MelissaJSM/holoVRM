@@ -83,6 +83,8 @@ export const Settings = ({
 
         if (selectedCharacter.includes("miko")) {
             selectedCharacter = "miko_1st";
+        } else if (selectedCharacter.includes("roboco")) {
+            selectedCharacter = "roboco";
         } else if (selectedCharacter.includes("fubuki")) {
             selectedCharacter = "fubuki";
         } else if (selectedCharacter.includes("mio")) {
@@ -137,6 +139,9 @@ export const Settings = ({
         if (selectedValue.includes("miko")) {
             adjustedValue = selectedValue;
             promptValue = "miko_1st";
+        } else if (selectedValue.includes("roboco")) {
+            adjustedValue = selectedValue;
+            promptValue = "roboco";
         } else if (selectedValue.includes("fubuki")) {
             adjustedValue = selectedValue;
             promptValue = "fubuki";
@@ -191,6 +196,8 @@ export const Settings = ({
         const body = document.body;
         if (selectedCharacter.includes("miko")) {
             body.style.backgroundImage = `url(${avatarBaseUrl}background/miko_1st.png)`;
+        } else if (selectedCharacter.includes("roboco")) {
+            body.style.backgroundImage = `url(${avatarBaseUrl}background/roboco.png)`;
         } else if (selectedCharacter.includes("fubuki")) {
             body.style.backgroundImage = `url(${avatarBaseUrl}background/fubuki.png)`;
         } else if (selectedCharacter.includes("mio")) {
@@ -259,7 +266,7 @@ export const Settings = ({
         {value: "miko_miko", label: "사쿠라 미코(무녀)", image: `${avatarBaseUrl}background/miko_miko.png`},
         {value: "miko_3rd", label: "사쿠라 미코(일상복)", image: `${avatarBaseUrl}background/miko_3rd.png`},
         {value: "roboco", label: "로보코 씨(구버전)", image: `${avatarBaseUrl}background/roboco.png`},
-        {value: "roboco_new", label: "로보코 씨(신버전)", image: `${avatarBaseUrl}background/roboco.png`},
+        {value: "roboco_v2", label: "로보코 씨(신버전)", image: `${avatarBaseUrl}background/roboco.png`},
         {value: "azki", label: "AZKi", image: `${avatarBaseUrl}background/azki.png`},
         {value: "default", label: "----- 홀로라이브 1기생 -----", image: `${avatarBaseUrl}background/default.png`},
         {value: "haato", label: "아카이 하아토", image: `${avatarBaseUrl}background/haato.png`},

@@ -239,9 +239,8 @@ export const Introduction: React.FC<Props> = ({
                     }
                 `}</style>
                 <div className="my-24">
-                    <div className="my-8 font-bold typography-20 text-secondary"
-                         style={{fontSize: "32px"}}>
-                        HoloVRM(0.9.9 beta)
+                    <div className="my-8 font-bold typography-20 text-secondary" style={{fontSize: "32px"}}>
+                        HoloVRM<span style={{fontSize: "18px"}}>(ver. 1.1.0)</span>
                     </div>
                     <br/>
                     <div>
