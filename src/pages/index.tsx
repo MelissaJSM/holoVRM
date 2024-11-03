@@ -36,8 +36,14 @@ export default function Home() {
     const [showIntro, setShowIntro] = useState(true);
     const [, setShowSettings] = useState(false);
     const [showAssistantMessage, setShowAssistantMessage] = useState(true);
-    const [isEmotionAnalysisEnabled, setIsEmotionAnalysisEnabled] = useState(true);
+    const [isEmotionAnalysisEnabled, setIsEmotionAnalysisEnabled] = useState(false);
     const isSessionLogin = userId.startsWith("session_"); // 토글버튼 온오프를 위한 작업
+    const [inputValue, setInputValue] = useState('');
+    const [isDeepThinkEnabled, setIsDeepThinkEnabled] = useState(false);
+    // "깊게 생각하기" 버튼의 핸들러
+    const handleDeepThinkToggle = (enabled: boolean) => {
+        setIsDeepThinkEnabled(enabled);
+    };
 
     const easterEgg = `
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -61,8 +67,9 @@ export default function Home() {
                "페코미코는 존재하니 믿을지어다.`;
 
     useEffect(() => {
-        console.log(easterEgg);
+        //console.log(easterEgg);
     }, []);
+
 
     const resetChatLog = useCallback(() => {
         setChatLog([]);
@@ -224,7 +231,18 @@ export default function Home() {
     /////////////////////////////////////////////////
 
     const getGpt4Response = async (messages: Message[], openAiKey: string, isSession: boolean) => {
-        const model = isSession ? "gpt-4o-mini" : "gpt-4o-2024-08-06";
+
+
+        //console.log(`index 에 전해진 닉네임:` + inputValue);
+        //console.log("깊게 생각하기 적용여부 : " + !isDeepThinkEnabled);
+
+
+        //추후 o1 기능을 활성화할때는 !isDeepThinkEnabled 으로 바꾸십시오.
+        const model = isDeepThinkEnabled
+            ? "o1-preview"  // 깊게 생각하기가 활성화된 경우 o1-preview 사용
+            : isSession
+                ? "gpt-4o-mini"  // 세션 로그인인 경우 gpt-4o-mini 사용
+                : "gpt-4o";      // 기본적으로 gpt-4o 사용
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -285,9 +303,17 @@ export default function Home() {
 
             if (newMessage == null) return;
 
-            let messageLog: Message[] = [
-                { role: "system", content: systemPrompt + emoteText },
-            ];
+            let messageLog: Message[] = [];
+
+            if (inputValue == null || inputValue === "") {
+                messageLog.push({ role: "system", content: systemPrompt + emoteText });
+            } else {
+                messageLog.push({
+                    role: "system",
+                    content: systemPrompt + "\n추가로 당신과 지금 대화하는 사람의 이름은 " + inputValue + "입니다. 이 사람은 당신의 팬이거나 당신과 연관있는 사람 혹은 매우 중요한 인물일 수 있습니다. 이름을 반드시 참고 부탁드립니다." + emoteText
+                });
+            }
+
 
             if (summary) {
                 messageLog.push({
@@ -334,6 +360,8 @@ export default function Home() {
                     character = "fubuki";
                 } else if ((characterVoiceParam.voiceId).includes("mio")) {
                     character = "mio";
+                } else if ((characterVoiceParam.voiceId).includes("subaru")) {
+                    character = "subaru";
                 } else if ((characterVoiceParam.voiceId).includes("aqua")) {
                     character = "aqua";
                 } else if ((characterVoiceParam.voiceId).includes("pekora")) {
@@ -490,6 +518,13 @@ export default function Home() {
                         onEmotionAnalysisToggle={setIsEmotionAnalysisEnabled}
                         isEmotionAnalysisEnabled={isEmotionAnalysisEnabled}
                         shouldShowEmotionToggle={!isSessionLogin} // 세션 로그인 상태가 아닐 때만 버튼을 보여줌
+
+                        //추후 깊게 생각하기에서 시스템 기능이 생성될경우 !isSessionLogin 을 넣으십시오
+                        shouldShowDeepThinkToggle={false} // 상태 전달
+
+
+                        isDeepThinkEnabled={isDeepThinkEnabled} // 상태 전달
+                        onDeepThinkToggle={handleDeepThinkToggle} // 상태 변경 함수 전달
                     />
                     <Menu
                         openAiKey={openAiKey}
@@ -512,6 +547,12 @@ export default function Home() {
                         showAssistantMessage={showAssistantMessage}
                         lastCharacter={lastCharacter}
                         loadParams={loadParams}  // loadParams 함수 전달
+                        inputValue={inputValue}              // 추가
+                        setInputValue={setInputValue}        // 추가
+                        isDeepThinkEnabled={isDeepThinkEnabled} // 추가된 부분
+                        handleDeepThinkToggle={handleDeepThinkToggle} // 추가된 부분
+                        shouldShowDeepThinkToggle={!isSessionLogin} // 세션이 아닌 로그인 상태에서만 "깊게 생각하기" 버튼 표시
+
 
                     />
                     <GitHubLink />

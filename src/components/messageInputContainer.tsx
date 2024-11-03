@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { MessageInput } from "@/components/messageInput";
 import ToggleButton from "@/components/ToggleButton";
+import ToggleButtonDeep from "@/components/ToggleButtonDeep";
+
 
 type Props = {
     isChatProcessing: boolean;
@@ -8,6 +10,9 @@ type Props = {
     onEmotionAnalysisToggle: (enabled: boolean) => void;
     isEmotionAnalysisEnabled: boolean;
     shouldShowEmotionToggle: boolean; // 버튼을 표시할지 여부
+    shouldShowDeepThinkToggle: boolean; // 깊게 생각하기 버튼을 표시할지 여부
+    isDeepThinkEnabled: boolean; // 추가된 부분
+    onDeepThinkToggle: (enabled: boolean) => void; // 추가된 부분
 };
 
 export const MessageInputContainer = ({
@@ -16,12 +21,16 @@ export const MessageInputContainer = ({
                                           onEmotionAnalysisToggle,
                                           isEmotionAnalysisEnabled,
                                           shouldShowEmotionToggle,
+                                          isDeepThinkEnabled, // props로 받아온 부분을 사용
+                                          onDeepThinkToggle, // props로 받아온 핸들러 사용
+                                          shouldShowDeepThinkToggle,
                                       }: Props) => {
     const [userMessage, setUserMessage] = useState("");
     const [speechRecognition, setSpeechRecognition] =
         useState<SpeechRecognition>();
     const [isMicRecording, setIsMicRecording] = useState(false);
 
+    // 추가: 깊게 생각하기 버튼의 상태 관리
     const handleRecognitionResult = useCallback(
         (event: SpeechRecognitionEvent) => {
             const text = event.results[0][0].transcript;
@@ -55,9 +64,11 @@ export const MessageInputContainer = ({
     }, [onChatProcessStart, userMessage]);
 
     const handleEmotionAnalysisToggle = () => {
-        //console.log("버튼이 눌러졌습니다 : " + !isEmotionAnalysisEnabled);
+        ////console.log("버튼이 눌러졌습니다 : " + !isEmotionAnalysisEnabled);
         onEmotionAnalysisToggle(!isEmotionAnalysisEnabled);
     };
+
+
 
     useEffect(() => {
         const SpeechRecognition =
@@ -89,6 +100,16 @@ export const MessageInputContainer = ({
                 <ToggleButton
                     latestSort={isEmotionAnalysisEnabled}
                     toggleHandler={handleEmotionAnalysisToggle}
+                />
+            )}
+            {/* 추가된 깊게 생각하기 버튼 */}
+            {shouldShowDeepThinkToggle && (
+                <ToggleButtonDeep
+                    latestSort={isDeepThinkEnabled}
+                    toggleHandler={() => {
+                        //console.log('Deep Think Toggled!');
+                        onDeepThinkToggle(!isDeepThinkEnabled);
+                    }}
                 />
             )}
             <MessageInput

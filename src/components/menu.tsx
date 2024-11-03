@@ -29,6 +29,11 @@ type Props = {
     setSummary: React.Dispatch<React.SetStateAction<string>>,
     lastCharacter?: string,
     loadParams: (inputUserId: string) => void, // <--- 여기에 loadParams 추가
+    inputValue: string, // <--- 여기에 inputValue 추가
+    setInputValue: React.Dispatch<React.SetStateAction<string>>, // <--- 여기에 setInputValue 추가
+    isDeepThinkEnabled: boolean, // 추가된 부분
+    shouldShowDeepThinkToggle: boolean, // 추가된 부분
+    handleDeepThinkToggle: (enabled: boolean) => void, // 추가된 부분
 };
 
 export const Menu = ({
@@ -52,7 +57,11 @@ export const Menu = ({
                          setSummary,
                          lastCharacter,
                          loadParams, // <--- 여기에 loadParams 추가
-
+                         inputValue, // <--- 여기에 inputValue 추가
+                         setInputValue, // <--- 여기에 setInputValue 추가
+                         isDeepThinkEnabled, // 추가된 부분
+                         shouldShowDeepThinkToggle, // 추가된 부분
+                         handleDeepThinkToggle // 추가된 부분
                      }: Props) => {
     const [showSettings, setShowSettings] = useState(false);
     const [showChatLog, setShowChatLog] = useState(false);
@@ -72,7 +81,6 @@ export const Menu = ({
         },
         [onChangeAiKey]
     );
-
 
     const handleCharacterVoiceChange = useCallback(
         (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -232,7 +240,8 @@ export const Menu = ({
                     setSummary={setSummary} // 추가된 부분
                     lastCharacter={lastCharacter} // 추가된 부분
                     loadParams={loadParams}  // <--- 여기에 loadParams 추가
-
+                    inputValue={inputValue}         // 부모 컴포넌트에서 받은 값 그대로 전달
+                    setInputValue={setInputValue}   // 부모 컴포넌트에서 받은 값 그대로 전달
                 />
             )}
             {!showChatLog && showAssistantMessage && assistantMessage && (
