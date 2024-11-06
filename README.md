@@ -11,6 +11,11 @@
 5. 폴더 안에 json 파일은 `config.json`, pth 파일은 `model.pth`로 변경합니다.
 6. 현재 gunicorn을 이용하였으나, 사용자의 취향대로 `app.py`를 구동시킵니다.
 
+# 버전 안내
+1. app_jpn.py : 한국어와 일본어 대응
+2. app.py : 한국어와 일본어 영어 대응(딥러닝 파일 필요)
+3. app_kor.py : 한국어만 가능
+
 # 영어 구동 방법
 1. https://github.com/MelissaJSM/IpaToKorean 링크로 들어갑니다.
 2. 딥러닝을 학습시킨 파일을 tts 폴더내에 best_model 폴더를 생성 후 넣습니다.
